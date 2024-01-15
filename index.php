@@ -26,7 +26,7 @@ include("./includes/auth_session.php");
 
 
 <body>
-    <div id="map"></div>
+    <div id="map"></div>    
     <p id="info" style="display: none;">Distance: 0 meters</p>
     <div class="container mt-4">
 
@@ -100,15 +100,15 @@ include("./includes/auth_session.php");
             if (!marker) {
                 marker = L.marker([lat, long]).addTo(map);
                 // circle = L.circle([lat, long], { radius: accuracy }).addTo(map);
-                $.post('php/Php_repo.php', {
-                    latloc: lat,
-                    longloc: long,
-                    distance: "00",
-                }).done(function(response) {
-                    console.log(response); // Log the response from the server
-                }).fail(function(error) {
-                    console.error("Error sending data to the server:", error);
-                });
+                // $.post('php/Php_repo.php', {
+                //     latloc: lat,
+                //     longloc: long,
+                //     distance: "00",
+                // }).done(function(response) {
+                //     console.log(response); // Log the response from the server
+                // }).fail(function(error) {
+                //     console.error("Error sending data to the server:", error);
+                // });
                 // Add a popup to the marker
                 marker.bindPopup("Your coordinate is Lat: " + lat + "<br>Long: " + long + "<br>Distance: " + distance + " meters").openPopup();
             } else {
@@ -123,15 +123,15 @@ include("./includes/auth_session.php");
                     console.log("Distance from previous position: " + distance.toFixed(2) + " meters");
 
                     // Update the popup content with distance
-                    $.post('php/Php_repo.php', {
-                        latloc: lat,
-                        longloc: long,
-                        distance: distance.toFixed(2)
-                    }).done(function(response) {
-                        console.log(response); // Log the response from the server
-                    }).fail(function(error) {
-                        console.error("Error sending data to the server:", error);
-                    });
+                    // $.post('php/Php_repo.php', {
+                    //     latloc: lat,
+                    //     longloc: long,
+                    //     distance: distance.toFixed(2)
+                    // }).done(function(response) {
+                    //     console.log(response); // Log the response from the server
+                    // }).fail(function(error) {
+                    //     console.error("Error sending data to the server:", error);
+                    // });
                     marker.getPopup().setContent("Your coordinate is Lat: " + lat + "<br>Long: " + long + "<br>Distance: " + distance.toFixed(2) + " meters").update();
                 }
 

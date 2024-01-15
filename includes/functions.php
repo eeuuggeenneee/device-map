@@ -1,37 +1,91 @@
-<html>
-<head>
-<title>User Login</title>
-<meta name="viewport" content="width=device-width , initial-scale=1">
-<link rel="stylesheet" type="text/css" href="./view/css/form.css" />
-<link rel="stylesheet" type="text/css" href="./view/css/style.css" />
-</head>
-<body>
-	<div class="phppot-container tile-container text-center">
-     <?php
-    if (isset($_SESSION["errorMessage"])) {
-        ?>
-                <div class="validation-message"><?php  echo $_SESSION["errorMessage"]; ?></div>
-                <?php
-        unset($_SESSION["errorMessage"]);
+<?php
+
+    function confirmQuery($string){
+
+        global $conn;
+
+        if(!$string){
+
+            die("ERROR" . mysqli_error($conn));
+        }
     }
-    ?>
-        <form action="login-action.php" method="post" id="frmLogin"
-			onSubmit="return validate();">
-			<h2>Enter Login Details</h2>
-			<div class="row">
-				<label class="text-left" for="username">Username <span
-					id="user_info" class="validation-message"></span></label> <input
-					name="user_name" id="user_name" type="text" class="full-width">
-			</div>
-			<div class="row">
-				<label class="text-left" for="password">Password <span
-					id="password_info" class="validation-message"></span></label> <input
-					name="password" id="password" type="password" class="full-width">
-			</div>
-			<div class="row">
-				<input type="submit" name="login" value="Login" class="full-width"></span>
-			</div>
-		</form>
-	</div>
-</body>
-</html>
+
+    function escape($string){
+
+        global $conn;
+
+        return mysqli_real_escape_string($conn, trim($string));
+
+    }
+
+    function InsertLogs($id, $conn, $val1, $val2, $val3){
+        $insert = "INSERT INTO scraplogs_tbl(ScrapDetailID, SRPlate, SRPaste, Trimmings) ";
+        $insert .= "VALUES('".$id."','".$val1."', '".$val2."', '".$val3."') ";
+        $result_query = odbc_exec($conn, $insert);
+
+        if($result_query){
+            $val =  2;
+        }
+        else{
+            $val =  0;
+        }
+    }
+
+    function Login($username, $password, $conn){
+        $result = 0;
+        $select = "SELECT cred.EmployeeID, emp.FirstName, emp.LastName, emp.NickName, cred.UserName, cred.Password  ";
+        $select .= "FROM usercredential_tbl cred ";
+        $select .="JOIN employee_tbl emp ON cred.EmployeeID = emp.EmployeeID ";
+        $select .="WHERE cred.UserName = '".$username."' and cred.Password = '".$password."' ";
+        $select .="and cred.IsActive = 1 and cred.IsDeleted = 0 ";
+
+        $result = odbc_exec($conn, $select);
+
+        $count = odbc_num_rows($result);
+
+        if($count !=0){
+            while($row = odbc_fetch_array($result)){
+                setcookie("GPAdmin_employeeID",$row['EmployeeID'],time()+3600 * 24 * 365, '/');
+                setcookie("GPAdmin_FirstName",$row['FirstName'],time()+3600 * 24 * 365, '/');
+                setcookie("GPAdmin_LasttName",$row['LastName'],time()+3600 * 24 * 365, '/');
+                setcookie("GPAdmin_NickName",$row['NickName'],time()+3600 * 24 * 365, '/');
+
+                setcookie("GPAdmin_UserName",$row['UserName'],time()+3600 * 24 * 365, '/');
+                setcookie("GPAdmin_Password",$row['Password'],time()+3600 * 24 * 365, '/');
+            }
+
+            return 1;
+        }
+        else{
+            return 0;
+        }
+
+    }
+
+    function Logout(){
+
+        session_name('sessionGPAdmin');
+        session_start();
+        session_destroy();
+        $page=$_SERVER['PHP_SELF'];
+        $sec = "10";
+        header('Refresh:1');
+
+
+        setcookie("GPAdmin_employeeID","",time()-3600 * 24 * 365, '/');
+        setcookie("GPAdmin_FirstName","",time()-3600 * 24 * 365, '/');
+        setcookie("GPAdmin_LasttName","",time()-3600 * 24 * 365, '/');
+        setcookie("GPAdmin_NickName","",time()-3600 * 24 * 365, '/');
+
+        setcookie("GPAdmin_UserName","",time()-3600 * 24 * 365, '/');
+        setcookie("GPAdmin_Password","",time()-3600 * 24 * 365, '/');
+
+        if(setcookie("GPAdmin_employeeID","",time()-3600 * 24 * 365, '/')){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
+?>
