@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
+
 <body>
     <h2>Login</h2>
 
     <?php
-
+    session_start();
     include("../includes/db.php");
     if (isset($_SESSION['user'])) {
-        header('Location: dashboard.php');
+
+        header('Location: ../index.php');
         exit();
     }
 
@@ -33,7 +36,7 @@
             $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
             if ($row) {
                 $_SESSION['user'] = $username;
-                session_start();
+       
                 header('Location: ../index.php');
                 exit();
             } else {
@@ -58,4 +61,5 @@
         <input type="submit" value="Login">
     </form>
 </body>
+
 </html>

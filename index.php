@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
 include("./includes/db.php");
+include("./includes/auth_session.php");
 ?>
 
 <head>
@@ -61,7 +62,7 @@ include("./includes/db.php");
     <script src="js/Js_repo.js"></script>
     <script>
         var map = L.map('map');
-
+        var check = 0;
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -86,6 +87,9 @@ include("./includes/db.php");
             },
 
         }).addTo(map);
+
+
+
 
         function getPosition(position) {
             var lat = position.coords.latitude;
