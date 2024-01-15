@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+include("./includes/db.php");
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -8,7 +11,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
     <style>
         #map {
@@ -19,27 +22,43 @@
 </head>
 
 
-<?php
-include("./includes/db.php");
-?>
+
 
 <body>
     <div id="map"></div>
-    <p id="info">Distance: 0 meters</p>
+    <p id="info" style="display: none;">Distance: 0 meters</p>
+    <div class="container mt-4">
 
 
+        <div class="mb-3">
+            <label for="activityList" class="form-label">List of Activities</label>
+            <select class="form-select" id="activityList" name="activityList">
+                <option value="" disabled selected>Select Option</option>
+                <option value="">Loading</option>
+                <option value="">Unloading</option>
+            </select>
+        </div>
 
+        <div class="mb-3">
+            <button class="btn btn-primary">Loading</button>
+            <button class="btn btn-danger">Unloading</button>
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-success">Start</button>
+            <button class="btn btn-warning">End</button>
+        </div>
+    </div>
     <script>
-
     </script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script src="https://unpkg.com/@turf/turf"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="js/Js_repo.js"></script>
-
     <script>
         var map = L.map('map');
 
@@ -56,7 +75,7 @@ include("./includes/db.php");
             // Use watchPosition for continuous tracking
             navigator.geolocation.watchPosition(getPosition, handleError, {
                 enableHighAccuracy: true,
-                maximumAge: 10000, // Maximum age of a cached position in milliseconds
+                maximumAge: 500, // Maximum age of a cached position in milliseconds
             });
         }
         var lc = L.control.locate({
@@ -77,7 +96,15 @@ include("./includes/db.php");
             if (!marker) {
                 marker = L.marker([lat, long]).addTo(map);
                 // circle = L.circle([lat, long], { radius: accuracy }).addTo(map);
-
+                $.post('php/Php_repo.php', {
+                    latloc: lat,
+                    longloc: long,
+                    distance: "00",
+                }).done(function(response) {
+                    console.log(response); // Log the response from the server
+                }).fail(function(error) {
+                    console.error("Error sending data to the server:", error);
+                });
                 // Add a popup to the marker
                 marker.bindPopup("Your coordinate is Lat: " + lat + "<br>Long: " + long + "<br>Distance: " + distance + " meters").openPopup();
             } else {
@@ -108,20 +135,7 @@ include("./includes/db.php");
                 map.panTo([lat, long]);
             }
 
-            // map.on('locationfound', function(evt) {
-            //     savedLatLng = evt.latlng;
-            //     $.post('php/Php_repo.php', {
-            //         latloc: lat,
-            //         longloc: long,
-            //         distance: distance.toFixed(2)
-            //     }).done(function(response) {
-            //         console.log(response); // Log the response from the server
-            //     }).fail(function(error) {
-            //         console.error("Error sending data to the server:", error);
-            //     });
-            //     console.log(savedLatLng);
 
-            // });
             console.log("Your coordinate is Lat: " + lat + " Long: " + long);
 
             // Store the current position as the previous position for the next iteration
@@ -206,7 +220,7 @@ include("./includes/db.php");
             check = 0;
         };
 
- 
+
 
         map.on('click', put);
 
@@ -218,6 +232,8 @@ include("./includes/db.php");
             console.error('Error getting location:', error.message);
         }
     </script>
+
+
 </body>
 
 </html>
