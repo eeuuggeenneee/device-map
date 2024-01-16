@@ -38,5 +38,8 @@ $(document).ready(function() {
         $(this).prop("disabled", true);
         $("#activityList").prop("disabled", false);
 
+
+        $("#loadingUnloadingButtons").hide();
+        $("#startEndButtons").hide();
     });
 });

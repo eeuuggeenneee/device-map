@@ -36,6 +36,7 @@ include("./includes/auth_session.php");
 
 <body>
     <div id="map" style="display: block;"></div>
+
     <p id="info" style="display: none;">Distance: 0 meters</p>
     <div class="container mt-4">
         <div class="mb-3">
@@ -43,6 +44,7 @@ include("./includes/auth_session.php");
             <select class="form-select" id="activityList" name="activityList">
                 <option value="" disabled selected>Select Option</option>
                 <?php
+
                 $sql = "SELECT * FROM activity";
                 $stmt = sqlsrv_query($conn, $sql);
 
@@ -81,7 +83,7 @@ include("./includes/auth_session.php");
                     <button class="btn btn-success col-12 btn-block" id="startBtn">Start</button>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-warning col-12 btn-block" disabled id="endBtn">End</button>
+                    <button class="btn btn-warning col-12 btn-block" id="endBtn">End</button>
                 </div>
             </div>
         </div>
@@ -98,6 +100,9 @@ include("./includes/auth_session.php");
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 
     <script>
+        var selectedValue;
+        var whatf = "";
+
         var map = L.map('map');
         var check = 0;
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -124,9 +129,50 @@ include("./includes/auth_session.php");
             },
 
         }).addTo(map);
-        
-       //lc.start();
 
+        //lc.start();
+
+        document.getElementById("activityList").addEventListener("change", function() {
+            selectedValue = this.value;
+            console.log("Selected value: " + selectedValue);
+
+        });
+
+
+        document.getElementById("loadingBtn").addEventListener("click", function() {
+            whatf = "Loading";
+        });
+
+        document.getElementById("unloadingBtn").addEventListener("click", function() {
+            whatf = "Unloading";
+        });
+        document.getElementById("startBtn").addEventListener("click", function() {
+            $.post('php/add_activity.php', {
+                user: <?php echo $_SESSION['user_id'] ?>,
+                activity: selectedValue,
+                what: whatf,
+                event: "Start"
+            }).done(function(response) {
+                console.log(response); // Log the response from the server
+            }).fail(function(error) {
+                console.error("Error sending data to the server:", error);
+            });
+        });
+        document.getElementById("endBtn").addEventListener("click", function() {
+            $.post('php/add_activity.php', {
+                user: <?php echo $_SESSION['user_id'] ?>,
+                activity: selectedValue,
+                what: whatf,
+                event: "End"
+            }).done(function(response) {
+                console.log(response); // Log the response from the server
+            }).fail(function(error) {
+                console.error("Error sending data to the server:", error);
+            });
+
+            whatf = "";
+            selectedValue;
+        });
 
 
         function getPosition(position) {
@@ -181,7 +227,6 @@ include("./includes/auth_session.php");
             var radius = evt.accuracy;
             var mlat = evt.latlng.lat
             var mlong = evt.latlng.lng
-            console.log(evt);
             $.post('php/Php_repo.php', {
                 latloc: mlat,
                 longloc: mlong,

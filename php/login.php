@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($row) {
             // Authentication successful
             $_SESSION['user'] = $username;
-
+            $_SESSION['user_id'] = $row['id'];
             setcookie(md5("user"),md5($_SESSION['user']),time()+3600 * 24 * 365, '/');
 
             // Set the session cookie to expire after a certain period (e.g., 7 days)

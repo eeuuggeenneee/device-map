@@ -6,8 +6,10 @@ drop table location
 
 drop table activity
 
-INSERT INTO user_tbl (user_id, username, password, currentloc)
-VALUES (12345, 'admin', 'admin', 'Fake City');
+drop table user_activity
+
+INSERT INTO user_tbl (username, password)
+VALUES ('admin', 'admin');
 
 -- Inserting fake data into the activity table
 INSERT INTO activity (name, lat, lng, timestamp) VALUES
@@ -21,4 +23,8 @@ select * from user_tbl
 
 select * from activity
 
-select * from location
+select * from location order by id desc
+
+select * from user_activity order by id desc
+
+truncate table location

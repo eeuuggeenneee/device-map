@@ -1,18 +1,18 @@
 <?php
 include("../includes/db.php");
 
-$lat = $_POST['latloc'];
-$long = $_POST['longloc'];
-$heading = $_POST['headingloc'];
-$accuracy = $_POST['radiusloc'];
+$user = $_POST['user'];
+$activity = $_POST['activity'];
+$what = $_POST['what'];
+$event = $_POST['event'];
 
 
 $currentDateTime = date('Y-m-d H:i:s'); 
 
 
 if ($conn) {
-    $tsql = "INSERT INTO location (user_id, lat, lon, accuracy, heading, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
-    $params = array(1, $lat, $long, $accuracy, $heading,$currentDateTime);
+    $tsql = "INSERT INTO user_activity (user_id, activity_id, what,event) VALUES (?, ?, ?, ?)";
+    $params = array($user, $activity, $what, $event);
     
     $stmt = sqlsrv_query($conn, $tsql, $params);
     
