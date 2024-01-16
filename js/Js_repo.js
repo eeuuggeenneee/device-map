@@ -1,55 +1,42 @@
 
+$(document).ready(function() {
+ 
+    $("#activityList").change(function() {
+        var selectedActivity = $(this).val();
 
+        if (selectedActivity != null ) {
+            $("#loadingUnloadingButtons").show();
+            $("#startEndButtons").hide();
+        } else {
+            $("#loadingUnloadingButtons").hide();
+            $("#startEndButtons").show();
+        }
+    });
 
-// $(document).ready(function () {
-//     // Create a Leaflet map
-//     var map = L.map('map');
+    $("#loadingBtn, #unloadingBtn").click(function() {
+        // Enable the "Start" button and disable the "End" button
+        $("#startBtn").prop("disabled", false);
+        $("#endBtn").prop("disabled", true);
 
-//     // Set up the tile layer, e.g., OpenStreetMap
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         attribution: '© OpenStreetMap contributors'
-//     }).addTo(map);
+        // For now, just showing the start and end buttons
+        $("#loadingUnloadingButtons").hide();
+        $("#startEndButtons").show();
+    });
 
-//     // Define a marker for the user's location
-//     var marker = L.marker();
+    $("#startBtn").click(function() {
+        // Disable the "Start" button and enable the "End" button
+        $("#activityList").prop("disabled", true);
 
-//     // Add an event listener for the locationfound event
-//     map.on('locationfound', function (e) {
-//         // Update the marker's position
-//         marker.setLatLng(e.latlng).addTo(map);
+        $("#startBtn").prop("disabled", true);
+        $("#endBtn").prop("disabled", false);
 
-//         // Display a popup with the user's coordinates
-//         marker.bindPopup("You are here: " + e.latlng.lat.toFixed(6) + ", " + e.latlng.lng.toFixed(6)).openPopup();
-//     });
+        lc.start();
+    });
 
-//     // Add an event listener for the locationerror event
-//     map.on('locationerror', function (e) {
-//         alert("Error getting your location: " + e.message);
-//     });
+    $("#endBtn").click(function() {
+        // Disable the "End" button
+        $(this).prop("disabled", true);
+        $("#activityList").prop("disabled", false);
 
-//     var movementThreshold = 5;
-//     // Function to update marker position
-//     function updateLocation(position) {
-//         // Check if the device has moved significantly
-//         if (marker.getLatLng().distanceTo([position.coords.latitude, position.coords.longitude]) > movementThreshold) {
-//             var latlng = [position.coords.latitude, position.coords.longitude];
-//             marker.setLatLng(latlng);
-//             // Update the marker's popup content with the latest coordinates and other information
-//             marker.bindPopup("You are here: " + latlng[0].toFixed(6) + ", " + latlng[1].toFixed(6));
-//             $('#info').text("You are here: " + latlng[0].toFixed(6) + ", " + latlng[1].toFixed(6))
-//             console.log("You are here: " + latlng[0].toFixed(6) + ", " + latlng[1].toFixed(6))
-//             // Open the popup (optional)
-//             marker.openPopup();
-//             map.setView(latlng, map.getZoom());
-//         }
-//     }
-
-//     // Request the user's location
-//     map.locate({ setView: true, maxZoom: 18 });
-
-//     // Watch the user's location for continuous updates
-//     var watchID = navigator.geolocation.watchPosition(updateLocation, function (error) {
-//         alert("Error getting your location: " + error.message);
-//     });
-
-// });
+    });
+});
