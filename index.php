@@ -13,20 +13,158 @@ include("./includes/auth_session.php");
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="assets/css/util.css" />
-    <link rel="stylesheet" href="assets/css/style.css" />
+   
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/css/select2.css" />
     <link rel="stylesheet" href="assets/css/select2.min.css" />
     <link rel="stylesheet" href="assets/css/datatables.min.css" /> -->
-
+    <link rel="stylesheet" href="assets/css/theme.min.css" />
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
     <style>
         #map {
             height: 400px;
             /* height: calc(20vh - 20px); */
+        }
+
+        /* Apply styles only when the screen width is less than or equal to 767px (typical mobile devices) */
+        @media (max-width: 767px) {
+            #activityList {
+                height: auto;
+                /* Reset the height */
+                max-height: 200px;
+                /* Set a maximum height for the dropdown list */
+                overflow-y: auto;
+                /* Enable vertical scrolling if needed */
+            }
+        }
+
+        .todo-nav {
+            margin-top: 10px
+        }
+
+        .todo-list {
+            margin: 10px 0;
+            max-height: 300px;
+            /* Set your desired max height */
+            overflow-y: auto;
+        }
+
+        /* Hide scrollbar in WebKit browsers */
+        .todo-list::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb {
+            background-color: #888;
+        }
+
+        .todo-list .todo-item {
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 0;
+            background: #f7f7f7
+        }
+
+        .todo-list.only-active .todo-item.complete {
+            display: none
+        }
+
+        .todo-list.only-active .todo-item:not(.complete) {
+            display: block
+        }
+
+        .todo-list.only-complete .todo-item:not(.complete) {
+            display: none
+        }
+
+        .todo-list.only-complete .todo-item.complete {
+            display: block
+        }
+
+        .todo-list .todo-item.complete span {
+            text-decoration: line-through
+        }
+
+        .remove-todo-item {
+            color: #ccc;
+            visibility: hidden
+        }
+
+        .remove-todo-item:hover {
+            color: #5f5f5f
+        }
+
+        .todo-item:hover .remove-todo-item {
+            visibility: visible
+        }
+
+        div.checker {
+            width: 18px;
+            height: 18px
+        }
+
+        div.checker input,
+        div.checker span {
+            width: 18px;
+            height: 18px
+        }
+
+        div.checker span {
+            display: -moz-inline-box;
+            display: inline-block;
+            zoom: 1;
+            text-align: center;
+            background-position: 0 -260px;
+        }
+
+        div.checker,
+        div.checker input,
+        div.checker span {
+            width: 19px;
+            height: 19px;
+        }
+
+        div.checker,
+        div.radio,
+        div.uploader {
+            position: relative;
+        }
+
+        div.button,
+        div.button *,
+        div.checker,
+        div.checker *,
+        div.radio,
+        div.radio *,
+        div.selector,
+        div.selector *,
+        div.uploader,
+        div.uploader * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div.button,
+        div.checker,
+        div.radio,
+        div.selector,
+        div.uploader {
+            display: -moz-inline-box;
+            display: inline-block;
+            zoom: 1;
+            vertical-align: middle;
+        }
+
+        .card {
+            padding: 25px;
+            margin-bottom: 20px;
+            border: initial;
+            background: #fff;
+            border-radius: calc(.15rem - 1px);
+            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.04);
         }
     </style>
 </head>
@@ -35,66 +173,140 @@ include("./includes/auth_session.php");
 
 
 <body>
-    <div id="map" style="display: block;"></div>
+    <div id="map" style="display: none;"></div>
 
     <p id="info" style="display: none;">Distance: 0 meters</p>
-  <a href="./php/logout.php">Logout</a>
+    <a href="./php/logout.php">Logout</a>
 
     <div class="container mt-4">
-        <div class="mb-3">
-            <label for="activityList" class="form-label">List of Activities</label>
-            <select class="form-select"  size="5" id="activityList" name="activityList">
-                <option value="" disabled selected>Select Option</option>
-                <?php
+        <h2 class="mb-3">Forklift Position Monitoring</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <h3>List of Activity</h3>
+                    <div class="card-body">
+                        <!-- <form action="javascript:void(0);">
+                            <input type="text" class="form-control add-task" placeholder="New Task...">
+                        </form> -->
+                        <!-- <ul class="nav nav-pills todo-nav">
+                            <li role="presentation" class="nav-item all-task active"><a href="#" class="nav-link">All</a></li>
+                            <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
+                            <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
+                        </ul> -->
+                        <div class="todo-list">
+                            <?php
+                            $sql = "SELECT * FROM activity";
+                            $stmt = sqlsrv_query($conn, $sql);
+                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                if ($row['id'] == 1) {
+                                    continue;
+                                }
+                                echo '<label class="todo-item col-12">
+                               <div class="checker">
+                                   <span class=""><input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox"></span>
+                               </div>
+                               <span>' . $row['name'] . '</span>
+                               <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+                             </label><br>';
+                            }
+                            ?>
+                        </div>
+                    </div>
 
-                $sql = "SELECT * FROM activity";
-                $stmt = sqlsrv_query($conn, $sql);
-
-                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                    echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
-                }
 
 
-                ?>
+                    <div class="mb-3" id="loadingUnloadingButtons" style="display: none;">
+                        <label for="loadingUnloadingButtons">
+                            <h3>Label</h3>
+                        </label>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-primary col-12 btn-block" id="loadingBtn">Loading</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-danger col-12 btn-block" id="unloadingBtn">Unloading</button>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="mb-3" id="startEndButtons" style="display: none;">
+                        <label for="">
 
-            </select>
-        </div>
-
-
-        <div class="mb-3" id="loadingUnloadingButtons" style="display: none;">
-            <label for="loadingUnloadingButtons">
-                <h3>Label</h3>
-            </label>
-            <div class="row">
-                <div class="col-6">
-                    <button class="btn btn-primary col-12 btn-block" id="loadingBtn">Loading</button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-danger col-12 btn-block" id="unloadingBtn">Unloading</button>
+                        </label>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-success col-12 btn-block" id="startBtn">Start</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-warning col-12 btn-block" disabled id="endBtn">End</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="mb-3" id="startEndButtons" style="display: none;">
-            <label for="">
-                <h3>Timer: 0:00</h3>
-            </label>
-            <div class="row">
-                <div class="col-6">
-                    <button class="btn btn-success col-12 btn-block" id="startBtn">Start</button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-warning col-12 btn-block" id="endBtn">End</button>
-                </div>
+        <div class="card">
+        <h3>Completed Activity</h3>
+
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Activity Name</th>
+                            <th scope="col">Event</th>
+                            <th scope="col">Timestamp</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
             </div>
+            <?php
+            $query = "SELECT
+                    a.id,
+                    a.user_id,
+                    a.activity_id,
+                    b.name,
+                    a.what,
+                    a.event,
+                    a.timestamp
+                    FROM
+                    user_activity a
+                    JOIN activity b
+                    ON a.activity_id = b.id where a.user_id = ?";
+            $params = array($_SESSION['user_id']);
+            $stmt = sqlsrv_query($conn, $query, $params);
+
+            if ($stmt === false) {
+                die(print_r(sqlsrv_errors(), true));
+            }
+            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                $formattedTimestamp = $row['timestamp']->format('Y-m-d H:i:s');
+
+                echo '<tr>
+                                <th scope="row">' . $row['id'] . '</th>
+                                <td>' . $row['name'] . '</td>
+                                <td>' . $row['event'] . '</td>
+                                <td>' . $formattedTimestamp . '</td>
+                              </tr>';
+            }
+
+
+            ?>
+
+            </tbody>
+            </table>
         </div>
     </div>
-
     </div>
+
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
@@ -105,6 +317,8 @@ include("./includes/auth_session.php");
         var tempselectedValue = 1;
         var selectedValue = 1;
         var whatf = "";
+        var checkboxes = document.querySelectorAll('.todo-checkbox');
+
 
         var map = L.map('map');
         var check = 0;
@@ -121,7 +335,7 @@ include("./includes/auth_session.php");
             // Use watchPosition for continuous tracking
             navigator.geolocation.watchPosition(getPosition, handleError, {
                 enableHighAccuracy: true,
-                maximumAge: 10000, // Maximum age of a cached position in milliseconds
+                maximumAge: 500, // Maximum age of a cached position in milliseconds
             });
         }
         var lc = L.control.locate({
@@ -134,26 +348,32 @@ include("./includes/auth_session.php");
         }).addTo(map);
 
         lc.start();
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Uncheck all checkboxes
+                checkboxes.forEach(function(otherCheckbox) {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false;
+                    }
+                });
 
-        document.getElementById("activityList").addEventListener("change", function() {
-            tempselectedValue = this.value;
-            console.log("Selected value: " + tempselectedValue);
-
+                // Get the value of the checked checkbox
+                tempselectedValue = checkbox.value;
+                console.log("Checkbox checked. Value: " + tempselectedValue);
+                // You can do further processing with the checkbox value here
+            });
         });
+        // document.getElementById("activityList").addEventListener("change", function() {
+        //     tempselectedValue = this.value;
+        //     console.log("Selected value: " + tempselectedValue);
 
-        document.getElementById("loadingBtn").addEventListener("click", function() {
-            whatf = "Loading";
-        });
+        // });
 
-        document.getElementById("unloadingBtn").addEventListener("click", function() {
-            whatf = "Unloading";
-        });
         document.getElementById("startBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
-                what: whatf,
                 event: "Start"
             }).done(function(response) {
                 console.log(response); // Log the response from the server
@@ -166,12 +386,14 @@ include("./includes/auth_session.php");
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
-                what: whatf,
                 event: "End"
             }).done(function(response) {
                 console.log(response); // Log the response from the server
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
+            });
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
             });
 
             whatf = "";
@@ -231,7 +453,7 @@ include("./includes/auth_session.php");
             var radius = evt.accuracy;
             var mlat = evt.latlng.lat
             var mlong = evt.latlng.lng
-
+            console.log(evt);
             $.post('php/Php_repo.php', {
                 latloc: mlat,
                 longloc: mlong,
@@ -324,6 +546,7 @@ include("./includes/auth_session.php");
     </script>
 
     <script src="js/js_repo.js"></script>
+    <script src="js/todo.js"></script>
 
 </body>
 

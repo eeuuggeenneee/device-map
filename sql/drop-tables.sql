@@ -23,10 +23,21 @@ INSERT INTO activity (name, lat, lng, timestamp) VALUES
 select * from user_tbl
 
 select * from activity
-
+select * from user_activity
 select * from location order by id desc
 
-select * from user_activity order by id desc
+SELECT
+a.id,
+a.user_id,
+a.activity_id,
+b.name,
+a.what,
+a.event,
+a.timestamp
+FROM
+user_activity a
+JOIN activity b
+ON a.activity_id = b.id where a.user_id = 1
 
 truncate table location
 
