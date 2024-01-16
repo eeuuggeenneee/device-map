@@ -18,17 +18,21 @@ CREATE TABLE activity (
     timestamp DATETIME DEFAULT GETDATE()
 );
 
+
 -- Create location table with foreign key constraints
 CREATE TABLE location (
     id INT IDENTITY(1,1) PRIMARY KEY,
+	activity_id INT,
     user_id INT,
     lat VARCHAR(50),
     lon VARCHAR(50),
     distance VARCHAR(50),
     accuracy varchar(50),
     heading varchar(50),
+	time_epoch varchar(50),
     timestamp DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (user_id) REFERENCES user_tbl(id),
+	FOREIGN KEY (activity_id) REFERENCES activity(id),
 );
 
 CREATE TABLE user_activity (

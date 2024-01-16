@@ -38,6 +38,7 @@ $(document).ready(function() {
         $(this).prop("disabled", true);
         $("#activityList").prop("disabled", false);
 
+        $("#activityList").prop("selectedIndex", 0);
 
         $("#loadingUnloadingButtons").hide();
         $("#startEndButtons").hide();

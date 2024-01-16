@@ -13,6 +13,7 @@ VALUES ('admin', 'admin');
 
 -- Inserting fake data into the activity table
 INSERT INTO activity (name, lat, lng, timestamp) VALUES
+('Idle', 40.7128, -74.0060, '2024-01-16T10:30:00'),
 ('Running', 40.7128, -74.0060, '2024-01-16T10:30:00'),
 ('Cycling', 34.0522, -118.2437, '2024-01-16T11:15:00'),
 ('Swimming', 41.8781, -87.6298, '2024-01-16T12:00:00'),
@@ -28,3 +29,5 @@ select * from location order by id desc
 select * from user_activity order by id desc
 
 truncate table location
+
+truncate table user_activity

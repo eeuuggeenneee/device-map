@@ -38,10 +38,12 @@ include("./includes/auth_session.php");
     <div id="map" style="display: block;"></div>
 
     <p id="info" style="display: none;">Distance: 0 meters</p>
+  <a href="./php/logout.php">Logout</a>
+
     <div class="container mt-4">
         <div class="mb-3">
             <label for="activityList" class="form-label">List of Activities</label>
-            <select class="form-select" id="activityList" name="activityList">
+            <select class="form-select"  size="5" id="activityList" name="activityList">
                 <option value="" disabled selected>Select Option</option>
                 <?php
 
@@ -100,7 +102,8 @@ include("./includes/auth_session.php");
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 
     <script>
-        var selectedValue;
+        var tempselectedValue = 1;
+        var selectedValue = 1;
         var whatf = "";
 
         var map = L.map('map');
@@ -130,14 +133,13 @@ include("./includes/auth_session.php");
 
         }).addTo(map);
 
-        //lc.start();
+        lc.start();
 
         document.getElementById("activityList").addEventListener("change", function() {
-            selectedValue = this.value;
-            console.log("Selected value: " + selectedValue);
+            tempselectedValue = this.value;
+            console.log("Selected value: " + tempselectedValue);
 
         });
-
 
         document.getElementById("loadingBtn").addEventListener("click", function() {
             whatf = "Loading";
@@ -147,6 +149,7 @@ include("./includes/auth_session.php");
             whatf = "Unloading";
         });
         document.getElementById("startBtn").addEventListener("click", function() {
+            selectedValue = tempselectedValue;
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
@@ -159,6 +162,7 @@ include("./includes/auth_session.php");
             });
         });
         document.getElementById("endBtn").addEventListener("click", function() {
+            selectedValue = tempselectedValue;
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
@@ -171,7 +175,7 @@ include("./includes/auth_session.php");
             });
 
             whatf = "";
-            selectedValue;
+            selectedValue = 1;
         });
 
 
@@ -227,11 +231,14 @@ include("./includes/auth_session.php");
             var radius = evt.accuracy;
             var mlat = evt.latlng.lat
             var mlong = evt.latlng.lng
+
             $.post('php/Php_repo.php', {
                 latloc: mlat,
                 longloc: mlong,
                 headingloc: heading,
                 radiusloc: radius,
+                activityl: selectedValue,
+                timestamp: evt.timestamp,
             }).done(function(response) {
                 console.log(response); // Log the response from the server
             }).fail(function(error) {
