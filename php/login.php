@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
-            <div class="col-6 col-sm-10 col-md-10">
+            <div class="col-6 col-sm-10 col-md-10 col-xl-5">
                 <div class="card">
                     <div class="py-2 px-2 text-center">
                         <h3 class="mt-3">LOGIN</h3>

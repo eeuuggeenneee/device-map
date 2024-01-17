@@ -431,6 +431,8 @@ include("./includes/auth_session.php");
             });
             checkboxes.forEach(function(checkbox) {
                 checkbox.checked = false;
+                checkbox.closest('.todo-item').style.backgroundColor = '';
+
             });
 
             whatf = "";
@@ -451,10 +453,9 @@ include("./includes/auth_session.php");
 
         setInterval(function() {
             map.locate({
-                setView: true,
-                maxZoom: 18,
-                watch: true,
-                enableHighAccuracy: true
+                enableHighAccuracy: true,
+                timeout: 100,
+                maximumAge: 150
             });
         }, 100);
 

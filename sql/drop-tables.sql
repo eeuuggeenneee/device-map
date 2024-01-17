@@ -52,7 +52,7 @@ select * from user_tbl
 select * from activity
 select * from user_activity
 select * from login_history
-select * from location order by id desc
+	select * from location order by id desc
 
 truncate table activity
 truncate table location
@@ -65,11 +65,16 @@ a.activity_id,
 b.name,
 a.what,
 a.event,
-a.timestamp
+a.timestamp,
+c.id,
+c.username
 FROM
 user_activity a
-JOIN activity b
-ON a.activity_id = b.id where a.user_id = 1
+JOIN activity b 
+ON a.activity_id = b.id
+JOIN user_tbl c 
+ON c.id =a.user_id 
+where a.user_id = 1
 
 
 truncate table activity
@@ -89,4 +94,4 @@ user_id
 FROM
 user_activity
 
-SELECT * FROM viewview
+SELECT * FROM dummy_location order by id desc

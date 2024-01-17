@@ -3,6 +3,8 @@ USE pbi_thermohygrometer_db;
 -- Create user_tbl table
 CREATE TABLE user_tbl (
     id INT IDENTITY(1,1) PRIMARY KEY,
+	f_name varchar(50),
+	l_name varchar(50),
     username varchar(50) UNIQUE,
     password varchar(50),
     currentloc VARCHAR(50),
@@ -60,17 +62,7 @@ CREATE TABLE login_history (
 
 
 CREATE TABLE dummy_location (
-   id INT IDENTITY(1,1) PRIMARY KEY,
-	activity_id INT,
-    user_id INT,
+	id INT IDENTITY(1,1) PRIMARY KEY,
     lat VARCHAR(50),
     lon VARCHAR(50),
-	fl_type VARCHAR(50),
-    distance VARCHAR(50),
-    accuracy varchar(50),
-    heading varchar(50),
-	time_epoch varchar(50) unique,
-    timestamp DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES user_tbl(id),
-	FOREIGN KEY (activity_id) REFERENCES activity(id),
 );
