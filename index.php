@@ -8,7 +8,7 @@ include("./includes/auth_session.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablet Position Tracking</title>
+    <title>Forklift Position Tracking</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
@@ -20,8 +20,8 @@ include("./includes/auth_session.php");
     <link rel="stylesheet" href="assets/css/select2.css" />
     <link rel="stylesheet" href="assets/css/select2.min.css" />
     <link rel="stylesheet" href="assets/css/datatables.min.css" /> -->
-    <link rel="stylesheet" href="assets/css/theme.min.css" />
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!-- <link rel="stylesheet" href="assets/css/theme.min.css" /> -->
 
     <style>
         #map {
@@ -34,7 +34,7 @@ include("./includes/auth_session.php");
             #activityList {
                 height: auto;
                 /* Reset the height */
-                max-height: 200px;
+                max-height: 350px;
                 /* Set a maximum height for the dropdown list */
                 overflow-y: auto;
                 /* Enable vertical scrolling if needed */
@@ -47,7 +47,7 @@ include("./includes/auth_session.php");
 
         .todo-list {
             margin: 10px 0;
-            max-height: 300px;
+            max-height: 500px;
             /* Set your desired max height */
             overflow-y: auto;
         }
@@ -159,11 +159,12 @@ include("./includes/auth_session.php");
         }
 
         .card {
+
             padding: 25px;
             margin-bottom: 20px;
             border: initial;
             background: #fff;
-            border-radius: calc(.15rem - 1px);
+            border-radius: calc(.15rem - 5px);
             box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.04);
         }
     </style>
@@ -176,13 +177,13 @@ include("./includes/auth_session.php");
     <div id="map" style="display: none;"></div>
 
     <p id="info" style="display: none;">Distance: 0 meters</p>
-    <a href="./php/logout.php">Logout</a>
+
 
     <div class="container mt-4">
-        <h2 class="mb-3">Forklift Position Monitoring</h2>
+        <h2 class="mb-3">Forklift Position Monitoring </h2>
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card rounded-3 shadow mb-5 bg-body">
                     <h3>List of Activity</h3>
                     <div class="card-body">
                         <!-- <form action="javascript:void(0);">
@@ -195,19 +196,20 @@ include("./includes/auth_session.php");
                         </ul> -->
                         <div class="todo-list">
                             <?php
-                            $sql = "SELECT * FROM activity";
+                            $sql = "SELECT * FROM activity WHERE fl_type = '" . $_SESSION['fl_type'] . "'";
                             $stmt = sqlsrv_query($conn, $sql);
+
                             while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                 if ($row['id'] == 1) {
                                     continue;
                                 }
                                 echo '<label class="todo-item col-12">
-                               <div class="checker">
-                                   <span class=""><input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox"></span>
-                               </div>
-                               <span>' . $row['name'] . '</span>
-                               <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
-                             </label><br>';
+                   <div class="checker">
+                       <span class=""><input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox"></span>
+                   </div>
+                   <span>' . $row['name'] . '</span>
+                   <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
+               </label><br>';
                             }
                             ?>
                         </div>
@@ -246,10 +248,10 @@ include("./includes/auth_session.php");
             </div>
         </div>
 
-        <div class="card">
-        <h3>Completed Activity</h3>
+        <div class="card rounded-3 shadow mb-5 bg-body">
+            <h3>Completed Activity</h3>
 
-            <div class="card-body">
+            <div class="card-body ">
 
                 <table class="table table-striped">
                     <thead>
@@ -299,7 +301,10 @@ include("./includes/auth_session.php");
             </tbody>
             </table>
         </div>
+
     </div>
+    <a style="float: right;" href="./php/logout.php">Logout</a>
+
     </div>
 
 
@@ -318,6 +323,7 @@ include("./includes/auth_session.php");
         var selectedValue = 1;
         var whatf = "";
         var checkboxes = document.querySelectorAll('.todo-checkbox');
+        var label = document.getElementById('label');
 
 
         var map = L.map('map');
@@ -329,15 +335,6 @@ include("./includes/auth_session.php");
         var marker, circle;
         var previousPosition;
 
-        if (!navigator.geolocation) {
-            console.log("Your browser doesn't support geolocation feature!")
-        } else {
-            // Use watchPosition for continuous tracking
-            navigator.geolocation.watchPosition(getPosition, handleError, {
-                enableHighAccuracy: true,
-                maximumAge: 500, // Maximum age of a cached position in milliseconds
-            });
-        }
         var lc = L.control.locate({
             position: 'topleft',
             strings: {
@@ -347,27 +344,67 @@ include("./includes/auth_session.php");
 
         }).addTo(map);
 
-        lc.start();
+        var current_position, current_accuracy;
+
+
+
+        function onLocationFound(e) {
+            // if (current_position) {
+            //     map.removeLayer(current_position);
+            //     map.removeLayer(current_accuracy);
+            // }
+
+            // current_position = L.marker(e.latlng).addTo(map)
+            //     .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+            // current_accuracy = L.circle(e.latlng, radius).addTo(map);
+            var radius = e.accuracy / 2;
+            var heading = e.heading;
+
+            var mlat = e.latlng.lat;
+            var mlong = e.latlng.lng;
+            $.post('php/Php_repo.php', {
+                userd: <?php echo $_SESSION['user_id']; ?>,
+                latloc: mlat,
+                longloc: mlong,
+                headingloc: heading,
+                radiusloc: radius,
+                activityl: selectedValue,
+                timestamp: e.timestamp,
+                fltype: <?php echo "'" . strval($_SESSION['fl_type']) . "'"; ?>,
+            }).done(function(response) {
+                console.log(response); // Log the response from the server
+            }).fail(function(error) {
+                console.error("Error sending data to the server:", error);
+            });
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+        //lc.start();
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 // Uncheck all checkboxes
                 checkboxes.forEach(function(otherCheckbox) {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.checked = false;
+                        otherCheckbox.closest('.todo-item').style.backgroundColor = ''; // Reset background color
                     }
                 });
-
-                // Get the value of the checked checkbox
                 tempselectedValue = checkbox.value;
                 console.log("Checkbox checked. Value: " + tempselectedValue);
+                // Change the background color of the checked checkbox
+                if (checkbox.checked) {
+                    checkbox.closest('.todo-item').style.backgroundColor = 'lightblue'; // Change to your desired background color
+                } else {
+                    checkbox.closest('.todo-item').style.backgroundColor = ''; // Reset background color if unchecked
+                }
+
                 // You can do further processing with the checkbox value here
             });
         });
-        // document.getElementById("activityList").addEventListener("change", function() {
-        //     tempselectedValue = this.value;
-        //     console.log("Selected value: " + tempselectedValue);
 
-        // });
 
         document.getElementById("startBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
@@ -401,79 +438,25 @@ include("./includes/auth_session.php");
         });
 
 
-        function getPosition(position) {
-            var lat = position.coords.latitude;
-            var long = position.coords.longitude;
-            var accuracy = position.coords.accuracy;
-            var distance = 0.00;
-            // Check if the marker and circle already exist
-            if (!marker) {
-                marker = L.marker([lat, long]).addTo(map);
-                // circle = L.circle([lat, long], { radius: accuracy }).addTo(map);
-                // $.post('php/Php_repo.php', {
-                //     latloc: lat,
-                //     longloc: long,
-                //     distance: "00",
-                // }).done(function(response) {
-                //     console.log(response); // Log the response from the server
-                // }).fail(function(error) {
-                //     console.error("Error sending data to the server:", error);
-                // });
-                // Add a popup to the marker
-                marker.bindPopup("Your coordinate is Lat: " + lat + "<br>Long: " + long + "<br>Distance: " + distance + " meters").openPopup();
-            } else {
-                // Update the positions of the existing marker and circle
-                marker.setLatLng([lat, long]);
-                // circle.setLatLng([lat, long]);
-                // circle.setRadius(accuracy);
+        map.on('locationfound', onLocationFound);
 
-                // Calculate distance from previous position
-                if (previousPosition) {
-                    distance = calculateDistance(previousPosition, [lat, long]);
-                    console.log("Distance from previous position: " + distance.toFixed(2) + " meters");
-
-                    // Update the popup content with distance
-
-                    marker.getPopup().setContent("Your coordinate is Lat: " + lat + "<br>Long: " + long + "<br>Distance: " + distance.toFixed(2) + " meters").update();
-                }
-
-                // Center the map on the updated position
-                map.panTo([lat, long]);
-            }
-
-
-            console.log("Your coordinate is Lat: " + lat + " Long: " + long);
-            // Store the current position as the previous position for the next iteration
-            previousPosition = [lat, long];
-
+        function locate() {
+            map.locate({
+                setView: true,
+                maxZoom: 18,
+                watch: true,
+                enableHighAccuracy: true
+            });
         }
 
-        map.on('locationfound', function(evt) {
-            var heading = evt.heading;
-            var radius = evt.accuracy;
-            var mlat = evt.latlng.lat
-            var mlong = evt.latlng.lng
-            console.log(evt);
-            $.post('php/Php_repo.php', {
-                latloc: mlat,
-                longloc: mlong,
-                headingloc: heading,
-                radiusloc: radius,
-                activityl: selectedValue,
-                timestamp: evt.timestamp,
-            }).done(function(response) {
-                console.log(response); // Log the response from the server
-            }).fail(function(error) {
-                console.error("Error sending data to the server:", error);
+        setInterval(function() {
+            map.locate({
+                setView: true,
+                maxZoom: 18,
+                watch: true,
+                enableHighAccuracy: true
             });
-        });
-
-        map.locate({
-            setView: true,
-            maxZoom: 18,
-            watch: true,
-            enableHighAccuracy: true
-        });
+        }, 100);
 
         function calculateDistance(point1, point2) {
             const earthRadius = 6371; // Earth radius in kilometers

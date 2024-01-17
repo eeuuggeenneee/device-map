@@ -840,7 +840,7 @@ body {
     line-height: var(--tdl-body-line-height);
     color: var(--tdl-body-color);
     text-align: var(--tdl-body-text-align);
-    background-color: var(--tdl-body-bg);
+    background-color: #b79898;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 }
