@@ -43,9 +43,12 @@ include("./includes/auth_session.php");
 
 
         .todo-list {
-            -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10 and IE 11 */
+            user-select: none;
+            /* Standard syntax */
             max-height: 500px;
             /* Set your desired max height */
             overflow-y: auto;
@@ -144,6 +147,10 @@ include("./includes/auth_session.php");
         .card-select.is-selected .button:after {
             content: 'Selected';
         }
+        .card-section {
+            min-height: 70px;
+            max-height: 70px;
+        }
     </style>
 </head>
 
@@ -207,7 +214,7 @@ include("./includes/auth_session.php");
                         </div>
                     </div>
 
-                    <div class="mb-3" id="startEndButtons" style="display: none; padding: 20px;">
+                    <div class="mb-3" id="startEndButtons" class="ms-3" style="display: none;   padding-right: 20px; padding-left: 20px;">
                         <label for="">
 
                         </label>
@@ -225,8 +232,10 @@ include("./includes/auth_session.php");
         </div>
 
         <div class="card rounded-3 shadow mb-5 bg-body">
-          
-            <div class="card-header">  <h3 class="py-2 px-2">Completed Activity</h3></div>
+
+            <div class="card-header">
+                <h3 class="py-2 px-2">Completed Activity</h3>
+            </div>
             <div class="card-body ">
 
                 <table class="table table-striped">
