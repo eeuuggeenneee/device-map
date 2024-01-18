@@ -1,10 +1,14 @@
 
-$(document).ready(function() {
- 
-    $("#activityList").change(function() {
+
+
+$(document).ready(function () {
+    $('[data-cardSelectButton]').click(function () {
+        $(this).parent('[data-cardSelect]').toggleClass('is-selected');
+    });
+    $("#activityList").change(function () {
         var selectedActivity = $(this).val();
 
-        if (selectedActivity != null ) {
+        if (selectedActivity != null) {
             $("#loadingUnloadingButtons").show();
             $("#startEndButtons").hide();
         } else {
@@ -13,7 +17,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#loadingBtn, #unloadingBtn").click(function() {
+    $("#loadingBtn, #unloadingBtn").click(function () {
         // Enable the "Start" button and disable the "End" button
         $("#startBtn").prop("disabled", false);
         $("#endBtn").prop("disabled", true);
@@ -23,7 +27,7 @@ $(document).ready(function() {
         $("#startEndButtons").show();
     });
 
-    $("#startBtn").click(function() {
+    $("#startBtn").click(function () {
         // Disable the "Start" button and enable the "End" button
         $("#activityList").prop("disabled", true);
 
@@ -33,7 +37,7 @@ $(document).ready(function() {
         lc.start();
     });
 
-    $("#endBtn").click(function() {
+    $("#endBtn").click(function () {
         // Disable the "End" button
         $(this).prop("disabled", true);
         $("#activityList").prop("disabled", false);
@@ -44,4 +48,8 @@ $(document).ready(function() {
         $("#loadingUnloadingButtons").hide();
         $("#startEndButtons").hide();
     });
+
+
+
+
 });

@@ -41,12 +41,9 @@ include("./includes/auth_session.php");
             }
         }
 
-        .todo-nav {
-            margin-top: 10px
-        }
 
         .todo-list {
-            margin: 10px 0;
+
             max-height: 500px;
             /* Set your desired max height */
             overflow-y: auto;
@@ -62,10 +59,10 @@ include("./includes/auth_session.php");
         }
 
         .todo-list .todo-item {
-            padding: 15px;
+            padding: 5px;
             margin: 5px 0;
             border-radius: 0;
-            background: #f7f7f7
+            background: white;
         }
 
         .todo-list.only-active .todo-item.complete {
@@ -101,71 +98,49 @@ include("./includes/auth_session.php");
             visibility: visible
         }
 
-        div.checker {
-            width: 18px;
-            height: 18px
-        }
 
-        div.checker input,
-        div.checker span {
-            width: 18px;
-            height: 18px
-        }
-
-        div.checker span {
-            display: -moz-inline-box;
-            display: inline-block;
-            zoom: 1;
+        .card-select {
             text-align: center;
-            background-position: 0 -260px;
+            transition: all 0.5s ease;
         }
 
-        div.checker,
-        div.checker input,
-        div.checker span {
-            width: 19px;
-            height: 19px;
+        .card-select .card-divider {
+            background-color: #fefefe;
+            letter-spacing: 1px;
+            font-weight: 500;
+            text-transform: uppercase;
+            border: 1px solid #cacaca;
         }
 
-        div.checker,
-        div.radio,
-        div.uploader {
-            position: relative;
+        .card-select .button {
+            padding: 1rem;
+            background-color: #cacaca;
         }
 
-        div.button,
-        div.button *,
-        div.checker,
-        div.checker *,
-        div.radio,
-        div.radio *,
-        div.selector,
-        div.selector *,
-        div.uploader,
-        div.uploader * {
-            margin: 0;
-            padding: 0;
+        .card-select .button:after {
+            content: 'Select';
         }
 
-        div.button,
-        div.checker,
-        div.radio,
-        div.selector,
-        div.uploader {
-            display: -moz-inline-box;
-            display: inline-block;
-            zoom: 1;
-            vertical-align: middle;
+        .card-select .button:hover {
+            background-color: #1779ba;
         }
 
-        .card {
+        .card-select .button:focus {
+            background-color: #1779ba;
+        }
 
-            padding: 25px;
-            margin-bottom: 20px;
-            border: initial;
-            background: #fff;
-            border-radius: calc(.15rem - 5px);
-            box-shadow: 0 1px 15px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.04);
+        .card-select.is-selected {
+            border: 1px solid #1779ba;
+            box-shadow: 0 0 10px #e6e6e6;
+            transition: all 0.5s ease;
+        }
+
+        .card-select.is-selected .button {
+            background-color: #1779ba;
+        }
+
+        .card-select.is-selected .button:after {
+            content: 'Selected';
         }
     </style>
 </head>
@@ -184,7 +159,10 @@ include("./includes/auth_session.php");
         <div class="row">
             <div class="col-md-12">
                 <div class="card rounded-3 shadow mb-5 bg-body">
-                    <h3>List of Activity</h3>
+
+                    <div class="card-header">
+                        <h3 class="py-2 px-2">List of Activity</h3>
+                    </div>
                     <div class="card-body">
                         <!-- <form action="javascript:void(0);">
                             <input type="text" class="form-control add-task" placeholder="New Task...">
@@ -194,44 +172,40 @@ include("./includes/auth_session.php");
                             <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
                             <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
                         </ul> -->
-                        <div class="todo-list">
-                            <?php
-                            $sql = "SELECT * FROM activity WHERE fl_type = '" . $_SESSION['fl_type'] . "'";
-                            $stmt = sqlsrv_query($conn, $sql);
-
-                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                if ($row['id'] == 1) {
-                                    continue;
-                                }
-                                echo '<label class="todo-item col-12">
-                   <div class="checker">
-                       <span class=""><input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox"></span>
-                   </div>
-                   <span>' . $row['name'] . '</span>
-                   <a href="javascript:void(0);" class="float-right remove-todo-item"><i class="icon-close"></i></a>
-               </label><br>';
-                            }
-                            ?>
-                        </div>
-                    </div>
-
-
-
-                    <div class="mb-3" id="loadingUnloadingButtons" style="display: none;">
-                        <label for="loadingUnloadingButtons">
-                            <h3>Label</h3>
-                        </label>
                         <div class="row">
-                            <div class="col-6">
-                                <button class="btn btn-primary col-12 btn-block" id="loadingBtn">Loading</button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-danger col-12 btn-block" id="unloadingBtn">Unloading</button>
+                            <div class="todo-list">
+                                <?php
+                                $sql = "SELECT * FROM activity WHERE fl_type = '" . $_SESSION['fl_type'] . "'";
+                                $stmt = sqlsrv_query($conn, $sql);
+
+                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                    if ($row['id'] == 1) {
+                                        continue;
+                                    }
+                                    echo '<label class="todo-item col-6">
+            <input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox d-none">
+            <div class="card card-select col-12" data-cardSelect>
+                <div class="card-divider">
+                    ' . $row['fl_type'] . '
+                </div>
+                <div class="checker">
+                    <span class="">
+                        <input type="checkbox" style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
+                    </span>
+                </div>
+                <div class="card-section px-3 py-3" style="min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
+                    <p class="text-black">' . $row['name'] . '</p>
+                </div>
+            </div>
+        </label>';
+                                }
+                                ?>
+
                             </div>
                         </div>
                     </div>
 
-                    <div class="mb-3" id="startEndButtons" style="display: none;">
+                    <div class="mb-3" id="startEndButtons" style="display: none; padding: 20px;">
                         <label for="">
 
                         </label>
@@ -249,8 +223,8 @@ include("./includes/auth_session.php");
         </div>
 
         <div class="card rounded-3 shadow mb-5 bg-body">
-            <h3>Completed Activity</h3>
-
+          
+            <div class="card-header">  <h3 class="py-2 px-2">Completed Activity</h3></div>
             <div class="card-body ">
 
                 <table class="table table-striped">
@@ -323,7 +297,7 @@ include("./includes/auth_session.php");
         var selectedValue = 1;
         var whatf = "";
         var checkboxes = document.querySelectorAll('.todo-checkbox');
-        var label = document.getElementById('label');
+        var textinside = document.getElementById('textinside');
 
 
         var map = L.map('map');
@@ -389,21 +363,34 @@ include("./includes/auth_session.php");
                 checkboxes.forEach(function(otherCheckbox) {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.checked = false;
-                        otherCheckbox.closest('.todo-item').style.backgroundColor = ''; // Reset background color
+                        resetTodoItemStyles(otherCheckbox);
                     }
                 });
+
                 tempselectedValue = checkbox.value;
                 console.log("Checkbox checked. Value: " + tempselectedValue);
-                // Change the background color of the checked checkbox
-                if (checkbox.checked) {
-                    checkbox.closest('.todo-item').style.backgroundColor = 'lightblue'; // Change to your desired background color
-                } else {
-                    checkbox.closest('.todo-item').style.backgroundColor = ''; // Reset background color if unchecked
-                }
 
-                // You can do further processing with the checkbox value here
+                // Change the background color of the checked checkbox
+                let todoItem = checkbox.closest('.todo-item');
+                let cardSection = todoItem.querySelector('.card-section');
+
+                if (checkbox.checked) {
+                    todoItem.style.backgroundColor = 'lightblue'; // Change to your desired background color
+                    cardSection.style.backgroundColor = 'lightblue';
+                } else {
+                    resetTodoItemStyles(checkbox);
+                }
             });
         });
+
+        function resetTodoItemStyles(checkbox) {
+            let todoItem = checkbox.closest('.todo-item');
+            let cardSection = todoItem.querySelector('.card-section');
+
+            todoItem.style.backgroundColor = ''; // Reset background color if unchecked
+            cardSection.style.backgroundColor = '';
+        }
+
 
 
         document.getElementById("startBtn").addEventListener("click", function() {
@@ -451,13 +438,13 @@ include("./includes/auth_session.php");
             });
         }
 
-        setInterval(function() {
-            map.locate({
-                enableHighAccuracy: true,
-                timeout: 100,
-                maximumAge: 150
-            });
-        }, 100);
+        // setInterval(function() {
+        //     map.locate({
+        //         enableHighAccuracy: true,
+        //         timeout: 100,
+        //         maximumAge: 150
+        //     });
+        // }, 100);
 
         function calculateDistance(point1, point2) {
             const earthRadius = 6371; // Earth radius in kilometers
