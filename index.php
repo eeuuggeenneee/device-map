@@ -43,7 +43,9 @@ include("./includes/auth_session.php");
 
 
         .todo-list {
-
+            -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
             max-height: 500px;
             /* Set your desired max height */
             overflow-y: auto;
