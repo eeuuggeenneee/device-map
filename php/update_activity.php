@@ -2,18 +2,14 @@
 include("../includes/db.php");
 
 $user = $_POST['user'];
-$activity = $_POST['activity'];
-$event = $_POST['event'];
-
 $timezone = new DateTimeZone('Asia/Manila');
-
 $currentDateTime = new DateTime('now', $timezone);
 // Format the DateTime object as a string
 $formattedDateTime = $currentDateTime->format('Y-m-d H:i:s');
 
 if ($conn) {
-    $tsql = "INSERT INTO user_activity (user_id, activity_id, start_time) VALUES (?, ?, ?)";
-    $params = array($user, $activity,$formattedDateTime);
+    $tsql = "UPDATE user_activity SET end_time = ? WHERE end_time IS NULL AND user_id = ?";
+    $params = array($formattedDateTime, $user);
     
     $stmt = sqlsrv_query($conn, $tsql, $params);
     

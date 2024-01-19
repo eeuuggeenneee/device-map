@@ -44,9 +44,9 @@ CREATE TABLE user_activity (
     id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT,
 	activity_id INT, 
-	what varchar(50),
-	event varchar(50),
-    timestamp DATETIME DEFAULT GETDATE(),
+    start_time DATETIME DEFAULT GETDATE(),
+	end_time DATETIME,
+	timestamp DATETIME DEFAULT GETDATE(),
 	FOREIGN KEY (user_id) REFERENCES user_tbl(id),
 	FOREIGN KEY (activity_id) REFERENCES activity(id)
 );
@@ -60,9 +60,3 @@ CREATE TABLE login_history (
 	FOREIGN KEY (user_id) REFERENCES user_tbl(id),
 );
 
-
-CREATE TABLE dummy_location (
-	id INT IDENTITY(1,1) PRIMARY KEY,
-    lat VARCHAR(50),
-    lon VARCHAR(50),
-);
