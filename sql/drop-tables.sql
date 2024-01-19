@@ -51,47 +51,22 @@ select * from user_tbl
 
 select * from activity
 select * from user_activity
+
+UPDATE user_activity
+SET end_time = 
+WHERE end_time IS NULL AND user_id = 1;
+
+
+WHERE end_time IS NULL AND user_id = 1;
+
 select * from login_history
 	select * from location order by id desc
 
-truncate table activity
 truncate table location
 truncate table user_activity
 
-SELECT
-a.id,
-a.user_id,
-a.activity_id,
-b.name,
-a.what,
-a.event,
-a.timestamp,
-c.id,
-c.username
-FROM
-user_activity a
-JOIN activity b 
-ON a.activity_id = b.id
-JOIN user_tbl c 
-ON c.id =a.user_id 
-where a.user_id = 1
+SELECT * FROM user_activity
 
 
-truncate table activity
-
-SELECT 
-id,
-user_id,
-activity_id,
-event,
-timestamp
-FROM user_activity
-
-CREATE VIEW viewview AS
-SELECT
-id,
-user_id
-FROM
-user_activity
 
 SELECT * FROM dummy_location order by id desc

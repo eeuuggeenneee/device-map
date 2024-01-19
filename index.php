@@ -147,9 +147,15 @@ include("./includes/auth_session.php");
         .card-select.is-selected .button:after {
             content: 'Selected';
         }
+
         .card-section {
             min-height: 70px;
             max-height: 70px;
+        }
+
+        .card.disabled {
+            opacity: 0.5;
+
         }
     </style>
 </head>
@@ -181,18 +187,49 @@ include("./includes/auth_session.php");
                             <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
                             <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
                         </ul> -->
-                        <div class="row">
+                        <div class="">
                             <div class="todo-list">
                                 <?php
+                                $check = "SELECT * FROM user_activity WHERE end_time IS NULL AND user_id = '" . $_SESSION['user_id'] . "'";
+                                $checkif = sqlsrv_query($conn, $check);
+
                                 $sql = "SELECT * FROM activity WHERE fl_type = '" . $_SESSION['fl_type'] . "'";
                                 $stmt = sqlsrv_query($conn, $sql);
+                                $yesnull = false;
+                                if (sqlsrv_has_rows($checkif)) {
+                                    $result = sqlsrv_fetch_array($checkif, SQLSRV_FETCH_ASSOC);
+                                    $activeActivityId = $result['activity_id'];
+                                    $yesnull = true;
+                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                        if ($row['id'] == 1) {
+                                            continue;
+                                        }
 
-                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                    if ($row['id'] == 1) {
-                                        continue;
+                                        $isDisabled = $row['id'] != $activeActivityId;
+
+                                        echo '<label class="todo-item col-6 " style="' . ($isDisabled ? '' : 'background-color: lightblue;') . '">
+            <div class="card ' . ($isDisabled ? 'disabled' : '') . ' card-select col-12" data-cardSelect>
+                <div class="card-divider">
+                    ' . $row['fl_type'] . '
+                </div>
+                <div class="checker">
+                    <span class="">
+                        <input type="checkbox" ' . ($isDisabled ? 'disabled' : 'checked') . '  style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
+                    </span>
+                </div>
+                <div class="card-section px-3 py-3" style="' . ($isDisabled ? '' : 'background-color: lightblue;') . ' min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
+                    <p class="text-black">' . $row['name'] . '</p>
+                </div>
+            </div>
+        </label>';
                                     }
-                                    echo '<label class="todo-item col-6">
-            <input type="checkbox" value="' . $row['id'] . '" class="todo-checkbox d-none">
+                                } else {
+                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                        if ($row['id'] == 1) {
+                                            continue;
+                                        }
+
+                                        echo '<label class="todo-item col-6">
             <div class="card card-select col-12" data-cardSelect>
                 <div class="card-divider">
                     ' . $row['fl_type'] . '
@@ -207,23 +244,25 @@ include("./includes/auth_session.php");
                 </div>
             </div>
         </label>';
+                                    }
                                 }
                                 ?>
+
 
                             </div>
                         </div>
                     </div>
 
-                    <div class="mb-3" id="startEndButtons" class="ms-3" style="display: none;   padding-right: 20px; padding-left: 20px;">
+                    <div class="mb-3" id="startEndButtons" class="ms-3" style="display: <?php echo isset($yesnull) && $yesnull ? 'block' : 'none'; ?>;   padding-right: 20px; padding-left: 20px;">
                         <label for="">
 
                         </label>
                         <div class="row">
                             <div class="col-6">
-                                <button class="btn btn-success col-12 btn-block" id="startBtn">Start</button>
+                                <button class="btn btn-success col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? 'disabled' : ''; ?> id="startBtn">Start</button>
                             </div>
                             <div class="col-6">
-                                <button class="btn btn-warning col-12 btn-block" disabled id="endBtn">End</button>
+                                <button class="btn btn-warning col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? '' : 'disabled'; ?> id="endBtn">End</button>
                             </div>
                         </div>
                     </div>
@@ -250,38 +289,7 @@ include("./includes/auth_session.php");
                     </thead>
                     <tbody>
             </div>
-            <?php
-            $query = "SELECT
-                    a.id,
-                    a.user_id,
-                    a.activity_id,
-                    b.name,
-                    a.what,
-                    a.event,
-                    a.timestamp
-                    FROM
-                    user_activity a
-                    JOIN activity b
-                    ON a.activity_id = b.id where a.user_id = ?";
-            $params = array($_SESSION['user_id']);
-            $stmt = sqlsrv_query($conn, $query, $params);
 
-            if ($stmt === false) {
-                die(print_r(sqlsrv_errors(), true));
-            }
-            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                $formattedTimestamp = $row['timestamp']->format('Y-m-d H:i:s');
-
-                echo '<tr>
-                                <th scope="row">' . $row['id'] . '</th>
-                                <td>' . $row['name'] . '</td>
-                                <td>' . $row['event'] . '</td>
-                                <td>' . $formattedTimestamp . '</td>
-                              </tr>';
-            }
-
-
-            ?>
 
             </tbody>
             </table>
@@ -409,7 +417,7 @@ include("./includes/auth_session.php");
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
-                event: "Start"
+
             }).done(function(response) {
                 console.log(response); // Log the response from the server
             }).fail(function(error) {
@@ -418,19 +426,26 @@ include("./includes/auth_session.php");
         });
         document.getElementById("endBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
-            $.post('php/add_activity.php', {
+            $.post('php/update_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
-                activity: selectedValue,
-                event: "End"
             }).done(function(response) {
-                console.log(response); // Log the response from the server
+                document.querySelectorAll('.card').forEach(function(cardSelect) {
+                    cardSelect.classList.remove('disabled');
+                });
+           
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
+
             checkboxes.forEach(function(checkbox) {
                 checkbox.checked = false;
-                checkbox.closest('.todo-item').style.backgroundColor = '';
+                checkbox.disabled = false;
+                // Reset background color of the card section
+                let cardSection = checkbox.closest('.todo-item').querySelector('.card-section');
 
+
+                cardSection.style.backgroundColor = '';
+                resetTodoItemStyles(checkbox);
             });
 
             whatf = "";
