@@ -280,23 +280,40 @@ include("./includes/auth_session.php");
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                     
                             <th scope="col">Activity Name</th>
-                            <th scope="col">Event</th>
-                            <th scope="col">Timestamp</th>
-
+                            <th scope="col">Operator Name</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col">Start Time</th>
+                            <th scope="col">End Time</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
+                    <?php 
+                        $view = "SELECT * FROM user_duration where user_id = '".$_SESSION['user_id']."';";
+                        $show = sqlsrv_query($conn, $view);
+                                
+
+                        while ($show2 = sqlsrv_fetch_array($show, SQLSRV_FETCH_ASSOC)) {
+                            echo "<tr>
+                                    <td>" . $show2['name'] . "</td>
+                                    <td>" . $show2['fullname'] . "</td>
+                                    <td>" . $show2['duration'] . "</td>
+                                    <td>" . $show2['formatted_start_time'] . "</td>
+                                    <td>" . $show2['formatted_end_time'] . "</td>
+                                    <td>" . $show2['date'] . "</td>
+                                  </tr>";
+                        }
+                        ?>
+                   
+                 
+                    </tbody>
+                </table>
             </div>
 
-
-            </tbody>
-            </table>
         </div>
-
-    </div>
-    <a style="float: right;" href="./php/logout.php">Logout</a>
+        <a style="float: right;" href="./php/logout.php">Logout</a>
 
     </div>
 
@@ -432,7 +449,7 @@ include("./includes/auth_session.php");
                 document.querySelectorAll('.card').forEach(function(cardSelect) {
                     cardSelect.classList.remove('disabled');
                 });
-           
+
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
