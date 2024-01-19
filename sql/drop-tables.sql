@@ -11,50 +11,61 @@ drop table user_activity
 INSERT INTO user_tbl (username, password)
 VALUES ('admin', 'admin');
 
-truncate table user_tbl
+truncate table location
+truncate table activity
+truncate table user_activity
+
 INSERT INTO user_tbl (username, password,f_name,l_name)
 VALUES ('admin', 'admin','Eugene', 'Eugenio');
 
 -- Inserting fake data into the activity table
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('IDLE','Moving', 40.7128, -74.0060, '2024-01-16T10:30:00');
+('Idle','Moving', 40.7128, -74.0060, '2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Planter)','	Remove the completely filled pallet at acid filling endline', 40.7128, -74.0060, '2024-01-16T10:30:00');
+('Others','Others', 40.7128, -74.0060, '2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Planter)','	Load the pallet to the specified charging circuit as per Planter', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Planter)','Tanggalin ang punong paleta sa filling line', 40.7128, -74.0060, '2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Planter)','	Refill the empty pallets in the Acid filling endline (up to 5 pallets only)', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Planter)','Itanim ang paleta sa charging circuit', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Planter)','	Refill the condenser bottles and wire connectors in the acid filler endline', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Planter)','Maglagay ng paleta sa filling line', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Planter)','	Transfer the harvested batteries to the harvest staging area and drop the slip on the pigeon hole', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Planter)','Irefill ang mga condenser bottles at wire connectors sa filling line', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Fork the charged batteries from the rack', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Planter)','Ilipat ang naharvest na baterya sa staging area at ilagay ang slip sa pigeon hole', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Travel going to harvesting area', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','I-fork ang na-charge na baterya mula sa rack', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Stack all the harvested batteries (wires and condensers are already removed)', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','Pumunta sa harvesting area', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Get the stillage containing condensers', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','I-stack ang mga naharvest na baterya', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Get the mist pads', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','Kunin ang condensers na may stillage', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Plant batteries on Line 3', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','Kunin ang mist pads', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Reach Truck (Harvester)','Harvest batteries on Line 3', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','Magtanim ng baterya sa Line 3', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Forklift operator','Loading the GB onto lines 2, 3, 4, 5, 6, and 8.', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Reach Truck (Harvester)','Magharvest ng baterya sa Line 3', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Forklift operator','Retrieving used pallets and used cardboard spacers as part of the GHK.', 40.7128, -74.0060,'2024-01-16T10:30:00');
+('Forklift operator','I-load ang mga GB sa mga filling line', 40.7128, -74.0060,'2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Forklift operator','Transferring the harvested items from the staging area to the end line.', 40.7128, -74.0060,'2024-01-16T10:30:00');
-
+('Forklift operator','Linisin ang mga nagamit na paleta at spacers', 40.7128, -74.0060,'2024-01-16T10:30:00');
+INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
+('Forklift operator','Ilipat ang mga baterya mula sa staging area papunta sa endline', 40.7128, -74.0060,'2024-01-16T10:30:00');
+INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
+('Forklift operator','Ilipat ang mga baterya mula sa staging area papunta sa endline', 40.7128, -74.0060,'2024-01-16T10:30:00');
 truncate table activity
 
 select * from user_tbl
-
+SELECT * FROM activity WHERE fl_type = 'Others' OR fl_type = 'Reach Truck (Planter)'
 select * from activity
 select * from user_activity
+SET IDENTITY_INSERT activity ON;
+
+UPDATE activity
+SET id = 100
+WHERE fl_type = 'Others';
 
 UPDATE user_activity
 SET end_time = 
@@ -81,6 +92,7 @@ SELECT
 	b.name,
     FORMAT(a.start_time, 'HH:mm:ss') AS s_time,
     FORMAT(a.end_time, 'HH:mm:ss') AS e_time,
+	FORMAT(a.end_time, 'HH:mm:ss') AS e_time,
     CASE
         WHEN DATEDIFF(SECOND, a.start_time, a.end_time) < 60 THEN
             CONCAT('0:', RIGHT('0' + CAST(DATEDIFF(SECOND, a.start_time, a.end_time) AS NVARCHAR), 2))

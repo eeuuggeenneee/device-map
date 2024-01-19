@@ -52,11 +52,20 @@ include("./includes/auth_session.php");
             max-height: 500px;
             /* Set your desired max height */
             overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
         }
 
         /* Hide scrollbar in WebKit browsers */
         .todo-list::-webkit-scrollbar {
             width: 0;
+        }
+
+        .todo-item {
+            flex: 1 1 48%;
+            /* Equal-width columns with a little margin between them */
+            margin: 1%;
+            /* Adjust the margin as needed */
         }
 
         .todo-list::-webkit-scrollbar-thumb {
@@ -149,13 +158,18 @@ include("./includes/auth_session.php");
         }
 
         .card-section {
-            min-height: 70px;
-            max-height: 70px;
+            height: 100px;
+            /* Set a fixed height */
+            text-size-adjust: 10px;
         }
 
         .card.disabled {
             opacity: 0.5;
 
+        }
+
+        .table-container {
+            overflow-x: auto;
         }
     </style>
 </head>
@@ -193,7 +207,7 @@ include("./includes/auth_session.php");
                                 $check = "SELECT * FROM user_activity WHERE end_time IS NULL AND user_id = '" . $_SESSION['user_id'] . "'";
                                 $checkif = sqlsrv_query($conn, $check);
 
-                                $sql = "SELECT * FROM activity WHERE fl_type = '" . $_SESSION['fl_type'] . "'";
+                                $sql = "SELECT * FROM activity WHERE fl_type = 'Others' OR fl_type = '" . $_SESSION['fl_type'] . "' ";
                                 $stmt = sqlsrv_query($conn, $sql);
                                 $yesnull = false;
                                 if (sqlsrv_has_rows($checkif)) {
@@ -270,44 +284,35 @@ include("./includes/auth_session.php");
             </div>
         </div>
 
-        <div class="card rounded-3 shadow mb-5 bg-body">
-
+        <div class="card rounded-3 shadow mb-5 bg-body" id="completedActivityCard">
             <div class="card-header">
                 <h3 class="py-2 px-2">Completed Activity</h3>
             </div>
             <div class="card-body ">
-
-                <table class="table table-striped">
+                <table class="table table-striped" id="completedActivityCard">
                     <thead>
                         <tr>
-                     
+                            <th scope="col">Date</th>
                             <th scope="col">Activity Name</th>
-                            <th scope="col">Operator Name</th>
-                            <th scope="col">Duration</th>
                             <th scope="col">Start Time</th>
                             <th scope="col">End Time</th>
-                            <th scope="col">Date</th>
+                            <th scope="col">Duration</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    <?php 
-                        $view = "SELECT * FROM user_duration where user_id = '".$_SESSION['user_id']."';";
+                    <tbody id="tbody">
+                        <?php
+                        $view = "SELECT * FROM user_duration where user_id = '" . $_SESSION['user_id'] . "' ORDER BY id DESC";
                         $show = sqlsrv_query($conn, $view);
-                                
-
                         while ($show2 = sqlsrv_fetch_array($show, SQLSRV_FETCH_ASSOC)) {
                             echo "<tr>
+                                     <td>" . $show2['date'] . "</td>
                                     <td>" . $show2['name'] . "</td>
-                                    <td>" . $show2['fullname'] . "</td>
-                                    <td>" . $show2['duration'] . "</td>
                                     <td>" . $show2['formatted_start_time'] . "</td>
                                     <td>" . $show2['formatted_end_time'] . "</td>
-                                    <td>" . $show2['date'] . "</td>
+                                    <td>" . $show2['duration'] . "</td>
                                   </tr>";
                         }
                         ?>
-                   
-                 
                     </tbody>
                 </table>
             </div>
@@ -334,6 +339,7 @@ include("./includes/auth_session.php");
         var whatf = "";
         var checkboxes = document.querySelectorAll('.todo-checkbox');
         var textinside = document.getElementById('textinside');
+        var tbody = document.getElementById('tbody');
 
 
         var map = L.map('map');
@@ -356,7 +362,18 @@ include("./includes/auth_session.php");
 
         var current_position, current_accuracy;
 
-
+        function updateTable() {
+            $.ajax({
+                url: 'php/get_update_data.php', // Replace with the actual server-side script to fetch data
+                type: 'GET',
+                success: function(data) {
+                    tbody.innerHTML = data;
+                },
+                error: function() {
+                }
+            });
+        }
+    
 
         function onLocationFound(e) {
             // if (current_position) {
@@ -440,6 +457,7 @@ include("./includes/auth_session.php");
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
+            updateTable();
         });
         document.getElementById("endBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
@@ -464,7 +482,7 @@ include("./includes/auth_session.php");
                 cardSection.style.backgroundColor = '';
                 resetTodoItemStyles(checkbox);
             });
-
+            updateTable();
             whatf = "";
             selectedValue = 1;
         });

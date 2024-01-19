@@ -9,8 +9,8 @@ if (isset($_SESSION['user'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = "admin";
+    $password = "admin";
     $fltype = $_POST['fl_type'];
     if ($conn) {
         $tsql = "SELECT * FROM user_tbl WHERE username = ? AND password = ?";
@@ -76,16 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="card-body">
                         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                            <div class="form-group">
-                                <label for="username">Username:</label>
-                                <input type="text" class="form-control" name="username" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" class="form-control" name="password" required>
-                            </div>
-
                             <div class="form-group">
                                 <label for="fl">Forklift Type:</label>
                                 <select class="form-control" id="fl" name="fl_type">
