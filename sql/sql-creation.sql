@@ -35,6 +35,7 @@ CREATE TABLE location (
     accuracy varchar(50),
     heading varchar(50),
 	time_epoch varchar(50) unique,
+	device_id VARCHAR(50),
     timestamp DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (user_id) REFERENCES user_tbl(id),
 	FOREIGN KEY (activity_id) REFERENCES activity(id),

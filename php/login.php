@@ -34,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setcookie(md5("user"), md5($_SESSION['user']), time() + 3600 * 24 * 365, '/');
             $params2 = array($row['id'],"LOGIN",$fltype);
             sqlsrv_query($conn, $insert, $params2);
-
+            $device_id = uniqid('device_', true);
+            $_SESSION['dev_id'] = $device_id;
             // Set the session cookie to expire after a certain period (e.g., 7 days)
             $cookieParams = session_get_cookie_params();
 

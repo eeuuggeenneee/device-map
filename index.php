@@ -158,7 +158,7 @@ include("./includes/auth_session.php");
         }
 
         .card-section {
-            height: 100px;
+            height: 110px;
             /* Set a fixed height */
             text-size-adjust: 10px;
         }
@@ -499,13 +499,13 @@ include("./includes/auth_session.php");
             });
         }
 
-        // setInterval(function() {
-        //     map.locate({
-        //         enableHighAccuracy: true,
-        //         timeout: 100,
-        //         maximumAge: 150
-        //     });
-        // }, 100);
+        setInterval(function() {
+            map.locate({
+                enableHighAccuracy: true,
+                timeout: 100,
+                maximumAge: 150
+            });
+        }, 100);
 
         function calculateDistance(point1, point2) {
             const earthRadius = 6371; // Earth radius in kilometers

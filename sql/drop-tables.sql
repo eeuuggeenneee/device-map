@@ -17,12 +17,12 @@ truncate table user_activity
 
 INSERT INTO user_tbl (username, password,f_name,l_name)
 VALUES ('admin', 'admin','Eugene', 'Eugenio');
-
+SET IDENTITY_INSERT activity off;
 -- Inserting fake data into the activity table
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
 ('Idle','Moving', 40.7128, -74.0060, '2024-01-16T10:30:00');
-INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
-('Others','Others', 40.7128, -74.0060, '2024-01-16T10:30:00');
+INSERT INTO activity (id,fl_type,name, lat, lng, timestamp) VALUES
+(1000,'Others','Others', 40.7128, -74.0060, '2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
 ('Reach Truck (Planter)','Tanggalin ang punong paleta sa filling line', 40.7128, -74.0060, '2024-01-16T10:30:00');
 INSERT INTO activity (fl_type,name, lat, lng, timestamp) VALUES
@@ -61,7 +61,7 @@ select * from user_tbl
 SELECT * FROM activity WHERE fl_type = 'Others' OR fl_type = 'Reach Truck (Planter)'
 select * from activity
 select * from user_activity
-SET IDENTITY_INSERT activity ON;
+select * from location
 
 UPDATE activity
 SET id = 100
@@ -75,7 +75,7 @@ SELECT * FROM user_activity
 WHERE end_time IS NULL AND user_id = 1;
 
 select * from login_history
-	select * from location order by id desc
+	
 
 truncate table location
 truncate table user_activity
@@ -104,7 +104,7 @@ JOIN activity b ON a.activity_id = b.id
 WHERE a.user_id = 1;
 
 
-SELECT * FROM user_duration where user_id = 1;
+SELECT * FROM user_duration where user_id = 1 ORDER BY id DESC;
 
 
 SELECT * FROM dummy_location order by id desc
@@ -128,3 +128,6 @@ SELECT
 FROM user_activity a
 JOIN activity b ON a.activity_id = b.id
 JOIN user_tbl c ON a.user_id = c.id;
+
+
+select * from location order by id desc
