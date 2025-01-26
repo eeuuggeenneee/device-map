@@ -1,8 +1,8 @@
 <?php
 
-$serverName = "DESKTOP-PM353L0"; // Replace with your SQL Server instance name or IP address
+$serverName = "DESKTOP-K8LRD2C"; // Replace with your SQL Server instance name or IP address
 $connectionOptions = array(
-    "Database" => "pbi_thermohygrometer_db", // Replace with your database name
+    "Database" => "pbi_fltracker", // Replace with your database name
     "Uid" => "", // Leave empty for Windows authentication
     "PWD" => "", // Leave empty for Windows authentication
 );
