@@ -28,6 +28,8 @@ include("./includes/auth_session.php");
     <!-- style CSS -->
     <link rel="stylesheet" href="css/style1.css" />
     <link rel="stylesheet" href="css/colors/default.css" id="colorSkinCSS">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
     <style>
         #map {
             height: 400px;
@@ -191,7 +193,7 @@ include("./includes/auth_session.php");
     <div class="container mt-4">
         <h2 class="mb-3">Forklift Position Monitoring </h2>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12" id="completedActivityCard">
                 <div class="card rounded-3 shadow mb-5 bg-body">
 
                     <div class="card-header">
@@ -305,19 +307,7 @@ include("./includes/auth_session.php");
                         </tr>
                     </thead>
                     <tbody id="tbody">
-                        <?php
-                        $view = "SELECT * FROM user_duration where user_id = '" . $_SESSION['user_id'] . "' ORDER BY id DESC";
-                        $show = sqlsrv_query($conn, $view);
-                        while ($show2 = sqlsrv_fetch_array($show, SQLSRV_FETCH_ASSOC)) {
-                            echo "<tr>
-                                     <td>" . $show2['date'] . "</td>
-                                    <td>" . $show2['name'] . "</td>
-                                    <td>" . $show2['formatted_start_time'] . "</td>
-                                    <td>" . $show2['formatted_end_time'] . "</td>
-                                    <td>" . $show2['duration'] . "</td>
-                                  </tr>";
-                        }
-                        ?>
+              
                     </tbody>
                 </table>
             </div>
@@ -337,6 +327,7 @@ include("./includes/auth_session.php");
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script src="https://unpkg.com/@turf/turf"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
         var tempselectedValue = 1;
@@ -345,7 +336,14 @@ include("./includes/auth_session.php");
         var checkboxes = document.querySelectorAll('.todo-checkbox');
         var textinside = document.getElementById('textinside');
         var tbody = document.getElementById('tbody');
-
+        $(document).ready(function () {
+            $('#completedActivityTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true
+            });
+        });
 
         var map = L.map('map');
         var check = 0;
@@ -374,11 +372,10 @@ include("./includes/auth_session.php");
                 success: function(data) {
                     tbody.innerHTML = data;
                 },
-                error: function() {
-                }
+                error: function() {}
             });
         }
-    
+
 
         function onLocationFound(e) {
             // if (current_position) {
@@ -405,9 +402,9 @@ include("./includes/auth_session.php");
                 timestamp: e.timestamp,
                 fltype: <?php echo "'" . strval($_SESSION['fl_type']) . "'"; ?>,
             }).done(function(response) {
-                console.log(response); // Log the response from the server
+                // console.log(response); // Log the response from the server
             }).fail(function(error) {
-                console.error("Error sending data to the server:", error);
+                // console.error("Error sending data to the server:", error);
             });
         }
 
@@ -459,10 +456,11 @@ include("./includes/auth_session.php");
 
             }).done(function(response) {
                 console.log(response); // Log the response from the server
+                updateTable();
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
-            updateTable();
+            
         });
         document.getElementById("endBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
@@ -472,9 +470,10 @@ include("./includes/auth_session.php");
                 document.querySelectorAll('.card').forEach(function(cardSelect) {
                     cardSelect.classList.remove('disabled');
                 });
+                updateTable();
 
             }).fail(function(error) {
-                console.error("Error sending data to the server:", error);
+                // console.error("Error sending data to the server:", error);
             });
 
             checkboxes.forEach(function(checkbox) {
@@ -487,11 +486,11 @@ include("./includes/auth_session.php");
                 cardSection.style.backgroundColor = '';
                 resetTodoItemStyles(checkbox);
             });
-            updateTable();
             whatf = "";
             selectedValue = 1;
         });
 
+        updateTable();
 
         map.on('locationfound', onLocationFound);
 
@@ -578,7 +577,7 @@ include("./includes/auth_session.php");
         }
 
         function handleError(error) {
-            console.error('Error getting location:', error.message);
+            //console.error('Error getting location:', error.message);
         }
     </script>
 
