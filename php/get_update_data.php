@@ -11,7 +11,7 @@ $html = '';
 while ($show2 = sqlsrv_fetch_array($show, SQLSRV_FETCH_ASSOC)) {
     $html .= "<tr>
                  <td>" . $show2['date'] . "</td>
-                <td>" . $show2['name'] . "</td>
+                <td>" . $show2['name']  . ": " . $show2['description']  . " </td>
                 <td>" . $show2['formatted_start_time'] . "</td>
                 <td>" . $show2['formatted_end_time'] . "</td>
                 <td>" . $show2['duration'] . "</td>

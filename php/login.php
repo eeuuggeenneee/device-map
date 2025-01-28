@@ -80,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="form-group">
                                 <label for="fl">Forklift Type:</label>
                                 <select class="form-control" id="fl" name="fl_type">
-                                    <option value="Reach Truck (Planter)">Reach Truck (Planter)</option>
-                                    <option value="Reach Truck (Harvester)">Reach Truck (Harvester)</option>
+                                    <!-- <option value="Reach Truck (Planter)">Reach Truck (Planter)</option>
+                                    <option value="Reach Truck (Harvester)">Reach Truck (Harvester)</option> -->
                                     <option value="Forklift operator">Forklift operator</option>
                                 </select>
                             </div>

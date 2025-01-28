@@ -20,7 +20,7 @@ if ($conn) {
     $stmt = sqlsrv_query($conn, $tsql, $params);
     
     if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
+        // die(print_r(sqlsrv_errors(), true));
     } else {
         echo "Record inserted successfully.";
     }

@@ -23,13 +23,10 @@ include("./includes/auth_session.php");
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <!-- <link rel="stylesheet" href="assets/css/theme.min.css" /> -->
     <link rel="stylesheet" href="css/bootstrap1.min.css" />
-    <!-- menu css  -->
     <link rel="stylesheet" href="css/metisMenu.css">
-    <!-- style CSS -->
     <link rel="stylesheet" href="css/style1.css" />
     <link rel="stylesheet" href="css/colors/default.css" id="colorSkinCSS">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
     <style>
         #map {
             height: 400px;
@@ -65,7 +62,7 @@ include("./includes/auth_session.php");
 
         /* Hide scrollbar in WebKit browsers */
         .todo-list::-webkit-scrollbar {
-            width: 0;
+            width: 10;
         }
 
         .todo-item {
@@ -179,17 +176,12 @@ include("./includes/auth_session.php");
             overflow-x: auto;
         }
     </style>
+
 </head>
-
-
-
 
 <body>
     <div id="map" style="display: none;"></div>
-
     <p id="info" style="display: none;">Distance: 0 meters</p>
-
-
     <div class="container mt-4">
         <h2 class="mb-3">Forklift Position Monitoring </h2>
         <div class="row">
@@ -209,7 +201,7 @@ include("./includes/auth_session.php");
                             <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
                         </ul> -->
                         <div class="">
-                            <div class="todo-list">
+                            <div class="todo-list gap-3">
                                 <?php
                                 $check = "SELECT * FROM user_activity WHERE end_time IS NULL AND user_id = '" . $_SESSION['user_id'] . "'";
                                 $checkif = sqlsrv_query($conn, $check);
@@ -227,44 +219,42 @@ include("./includes/auth_session.php");
                                         }
 
                                         $isDisabled = $row['id'] != $activeActivityId;
-
-                                        echo '<label class="todo-item col-6 " style="' . ($isDisabled ? '' : 'background-color: lightblue;') . '">
-            <div class="card ' . ($isDisabled ? 'disabled' : '') . ' card-select col-12" data-cardSelect>
-                <div class="card-divider">
-                    ' . $row['fl_type'] . '
-                </div>
-                <div class="checker">
-                    <span class="">
-                        <input type="checkbox" ' . ($isDisabled ? 'disabled' : 'checked') . '  style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
-                    </span>
-                </div>
-                <div class="card-section px-3 py-3" style="' . ($isDisabled ? '' : 'background-color: lightblue;') . ' min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
-                    <p class="text-black">' . $row['name'] . '</p>
-                </div>
-            </div>
-        </label>';
+                                        echo '<label class="card todo-item col-6 ' . ($isDisabled ? 'disabled' : '') . '" data-cardSelect style="' . ($isDisabled ? '' : 'background-color: lightblue;') . '">
+                                                <div class="card-section px-1 py-1 total_blance mt_20 mb_10">
+                                                    <span class="f_s_13 f_w_700 color_gray ">' . $row['name'] . '</span>
+                                                    <div class="total_blance_inner d-flex align-items-center flex-wrap justify-content-between">
+                                                        <div>
+                                                            <span class="f_s_20 f_w_700  d-block">' . $row['description'] . '</span>
+                                                        </div>
+                                                        <div class="checker">
+                                                            <div class="card-section px-3 py-3" style="' . ($isDisabled ? '' : 'background-color: lightblue;') . ' min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
+                                                                <p class="text-black">' . $row['name'] . '</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>';
                                     }
                                 } else {
                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         if ($row['id'] == 1) {
                                             continue;
                                         }
-
-                                        echo '<label class="todo-item col-6">
-            <div class="card card-select col-12" data-cardSelect>
-                <div class="card-divider">
-                    ' . $row['fl_type'] . '
-                </div>
-                <div class="checker">
-                    <span class="">
-                        <input type="checkbox" style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
-                    </span>
-                </div>
-                <div class="card-section px-3 py-3" style="min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
-                    <p class="text-black">' . $row['name'] . '</p>
-                </div>
-            </div>
-        </label>';
+                                        echo '<label class="card todo-item col-6" data-cardSelect>
+                                                        <div class=" card-section px-1 py-1 total_blance mt_20 mb_10" data-id="' . $row['id'] . '" data-id="' . $row['id'] . '">
+                                                            <span class="f_s_13 f_w_700 color_gray ">' . $row['name'] . '</span>
+                                                            <div class="total_blance_inner d-flex align-items-center flex-wrap justify-content-between">
+                                                                <div>
+                                                                    <span class="f_s_20 f_w_700  d-block">' . $row['description'] . '</span>
+                                                                </div>
+                                                                <div class="checker">
+                                                                    <span class="">
+                                                                        <input type="checkbox" style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </label>';
                                     }
                                 }
                                 ?>
@@ -307,7 +297,7 @@ include("./includes/auth_session.php");
                         </tr>
                     </thead>
                     <tbody id="tbody">
-              
+
                     </tbody>
                 </table>
             </div>
@@ -336,7 +326,7 @@ include("./includes/auth_session.php");
         var checkboxes = document.querySelectorAll('.todo-checkbox');
         var textinside = document.getElementById('textinside');
         var tbody = document.getElementById('tbody');
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#completedActivityTable').DataTable({
                 paging: true,
                 searching: true,
@@ -396,15 +386,15 @@ include("./includes/auth_session.php");
                 userd: <?php echo $_SESSION['user_id']; ?>,
                 latloc: mlat,
                 longloc: mlong,
-                headingloc: heading,
+                headingloc: heading ?? 'N/A',
                 radiusloc: radius,
                 activityl: selectedValue,
                 timestamp: e.timestamp,
                 fltype: <?php echo "'" . strval($_SESSION['fl_type']) . "'"; ?>,
             }).done(function(response) {
-                // console.log(response); // Log the response from the server
+                console.log(response); // Log the response from the server//
             }).fail(function(error) {
-                // console.error("Error sending data to the server:", error);
+                console.error("Error sending data to the server:", error);
             });
         }
 
@@ -446,22 +436,19 @@ include("./includes/auth_session.php");
             cardSection.style.backgroundColor = '';
         }
 
-
-
         document.getElementById("startBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: selectedValue,
-
             }).done(function(response) {
                 console.log(response); // Log the response from the server
                 updateTable();
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
-            
         });
+
         document.getElementById("endBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
             $.post('php/update_activity.php', {
@@ -471,7 +458,6 @@ include("./includes/auth_session.php");
                     cardSelect.classList.remove('disabled');
                 });
                 updateTable();
-
             }).fail(function(error) {
                 // console.error("Error sending data to the server:", error);
             });
@@ -491,7 +477,6 @@ include("./includes/auth_session.php");
         });
 
         updateTable();
-
         map.on('locationfound', onLocationFound);
 
         function locate() {
