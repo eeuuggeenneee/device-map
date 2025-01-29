@@ -175,6 +175,156 @@ include("./includes/auth_session.php");
         .table-container {
             overflow-x: auto;
         }
+
+        .progress-section {
+            flex: 2;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-section h2 {
+            margin-bottom: 1rem;
+            color: #003366;
+        }
+
+        .progress-bar-container {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            background-color: #007acc;
+            width: 0;
+            transition: width
+        }
+
+        p {
+            color: black !important;
+        }
+
+        .task-section {
+            flex: 3;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-section h2 {
+            margin-bottom: 1rem;
+            color: #003366;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        .task-details {
+            flex: 1;
+        }
+
+        .task button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .task button.skip {
+            background-color: #ffc107;
+        }
+
+        .task button:hover {
+            opacity: 0.9;
+        }
+
+        .timeline-steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        .timeline-steps .timeline-step {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 1rem
+        }
+
+        @media (min-width:768px) {
+
+            .timeline-steps .timeline-step:not(:last-child):after {
+                content: "";
+                display: block;
+                border-top: .25rem dotted #3b82f6;
+                width: 2rem;
+                position: absolute;
+                left: 3rem;
+                top: .3125rem
+            }
+
+            .timeline-steps .timeline-step:not(:first-child):before {
+                content: "";
+                display: block;
+                border-top: .25rem dotted #3b82f6;
+                width: 4rem;
+                position: absolute;
+                right: 3rem;
+                top: .3125rem
+            }
+        }
+
+        .timeline-steps .timeline-content {
+            width: 4rem;
+            text-align: center
+        }
+
+        .timeline-steps .timeline-content .inner-circle {
+            border-radius: 1.5rem;
+            height: 10px;
+            width: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6
+        }
+
+        .timeline-steps .timeline-content .inner-circle:before {
+            content: "";
+            background-color: #3b82f6;
+            display: inline-block;
+            height: 15px;
+            width: 15px;
+            min-width: 15px;
+            border-radius: 6.25rem;
+            opacity: .5
+        }
     </style>
 
 </head>
@@ -182,130 +332,240 @@ include("./includes/auth_session.php");
 <body>
     <div id="map" style="display: none;"></div>
     <p id="info" style="display: none;">Distance: 0 meters</p>
-    <div class="container mt-4">
-        <h2 class="mb-3">Forklift Position Monitoring </h2>
+    <div class="px-3 py-3">
         <div class="row">
-            <div class="col-md-12" id="completedActivityCard">
-                <div class="card rounded-3 shadow mb-5 bg-body">
-
-                    <div class="card-header">
-                        <h3 class="py-2 px-2">List of Activity</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- <form action="javascript:void(0);">
-                            <input type="text" class="form-control add-task" placeholder="New Task...">
-                        </form> -->
-                        <!-- <ul class="nav nav-pills todo-nav">
-                            <li role="presentation" class="nav-item all-task active"><a href="#" class="nav-link">All</a></li>
-                            <li role="presentation" class="nav-item active-task"><a href="#" class="nav-link">Active</a></li>
-                            <li role="presentation" class="nav-item completed-task"><a href="#" class="nav-link">Completed</a></li>
-                        </ul> -->
-                        <div class="">
-                            <div class="todo-list gap-3">
-                                <?php
-                                $check = "SELECT * FROM user_activity WHERE end_time IS NULL AND user_id = '" . $_SESSION['user_id'] . "'";
-                                $checkif = sqlsrv_query($conn, $check);
-
-                                $sql = "SELECT * FROM activity WHERE fl_type = 'Others' OR fl_type = '" . $_SESSION['fl_type'] . "' ";
-                                $stmt = sqlsrv_query($conn, $sql);
-                                $yesnull = false;
-                                if (sqlsrv_has_rows($checkif)) {
-                                    $result = sqlsrv_fetch_array($checkif, SQLSRV_FETCH_ASSOC);
-                                    $activeActivityId = $result['activity_id'];
-                                    $yesnull = true;
-                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                        if ($row['id'] == 1) {
-                                            continue;
-                                        }
-
-                                        $isDisabled = $row['id'] != $activeActivityId;
-                                        echo '<label class="card todo-item col-6 ' . ($isDisabled ? 'disabled' : '') . '" data-cardSelect style="' . ($isDisabled ? '' : 'background-color: lightblue;') . '">
-                                                <div class="card-section px-1 py-1 total_blance mt_20 mb_10">
-                                                    <span class="f_s_13 f_w_700 color_gray ">' . $row['name'] . '</span>
-                                                    <div class="total_blance_inner d-flex align-items-center flex-wrap justify-content-between">
-                                                        <div>
-                                                            <span class="f_s_20 f_w_700  d-block">' . $row['description'] . '</span>
-                                                        </div>
-                                                        <div class="checker">
-                                                            <div class="card-section px-3 py-3" style="' . ($isDisabled ? '' : 'background-color: lightblue;') . ' min-height: 70px; box-sizing: border-box;" data-id="' . $row['id'] . '">
-                                                                <p class="text-black">' . $row['name'] . '</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </label>';
-                                    }
-                                } else {
-                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                        if ($row['id'] == 1) {
-                                            continue;
-                                        }
-                                        echo '<label class="card todo-item col-6" data-cardSelect>
-                                                        <div class=" card-section px-1 py-1 total_blance mt_20 mb_10" data-id="' . $row['id'] . '" data-id="' . $row['id'] . '">
-                                                            <span class="f_s_13 f_w_700 color_gray ">' . $row['name'] . '</span>
-                                                            <div class="total_blance_inner d-flex align-items-center flex-wrap justify-content-between">
-                                                                <div>
-                                                                    <span class="f_s_20 f_w_700  d-block">' . $row['description'] . '</span>
-                                                                </div>
-                                                                <div class="checker">
-                                                                    <span class="">
-                                                                        <input type="checkbox" style="display: none;" value="' . $row['id'] . '" class="todo-checkbox">
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </label>';
-                                    }
-                                }
-                                ?>
-
-
-                            </div>
+            <div class="col-6">
+                <!-- <div class="task">
+                        <div class="task-details">
+                            <strong>Pick up Skid:</strong> Align forks and lift the skid.
                         </div>
-                    </div>
-
-                    <div class="mb-3" id="startEndButtons" class="ms-3" style="display: <?php echo isset($yesnull) && $yesnull ? 'block' : 'none'; ?>;   padding-right: 20px; padding-left: 20px;">
-                        <label for="">
-
-                        </label>
-                        <div class="row">
-                            <div class="col-6">
-                                <button class="btn btn-success col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? 'disabled' : ''; ?> id="startBtn">Start</button>
+                        <button>START</button>
+                        <button class="skip">SKIP</button>
+                    </div> -->
+                <div class="progress-section">
+                    <div class="card-body px-1 py-2">
+                        <div class="d-flex justify-content-center">
+                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                <h2 class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Loading Tasks</button>
+                                </h2>
+                                <h2 class="nav-item" role="presentation">
+                                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Unloading Tasks</button>
+                                </h2>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <div class="px-3 py-3">
+                                    <?php
+                                    $query = "SELECT * FROM activity WHERE move_type = 'Loading'";
+                                    $result = sqlsrv_query($conn, $query);
+                                    if ($result === false) {
+                                        die(print_r(sqlsrv_errors(), true));
+                                    }
+                                    // Loop through results and display tasks
+                                    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+                                    ?> <div class="task">
+                                            <div class="task-details">
+                                                <h6><strong><?php echo htmlspecialchars($row['name']); ?>:</strong> <?php echo htmlspecialchars($row['description']); ?></h6>
+                                            </div>
+                                            <button>START</button>
+                                            <button class="skip">SKIP</button>
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <button class="btn btn-warning col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? '' : 'disabled'; ?> id="endBtn">End</button>
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <div class="px-3 py-3">
+                                    <?php
+                                    $query = "SELECT * FROM activity WHERE move_type = 'Unloading'";
+                                    $result = sqlsrv_query($conn, $query);
+
+                                    if ($result === false) {
+                                        die(print_r(sqlsrv_errors(), true));
+                                    }
+
+                                    // Loop through results and display tasks
+                                    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+                                    ?> <div class="task">
+                                            <div class="task-details">
+                                                <h6><strong><?php echo htmlspecialchars($row['name']); ?>:</strong> <?php echo htmlspecialchars($row['description']); ?></h6>
+                                            </div>
+                                            <button>START</button>
+                                            <button class="skip">SKIP</button>
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
                             </div>
+                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card rounded-3 shadow mb-5 bg-body" id="completedActivityCard">
-            <div class="card-header">
-                <h3 class="py-2 px-2">Completed Activity</h3>
             </div>
-            <div class="card-body ">
-                <table class="table table-striped" id="completedActivityCard">
+            <div class="col-6">
+                <div class="progress-section">
+                    <div class="d-flex">
+                        <h2>Current Activity</h2>
+                        <h5 class="ms-auto">Elapse Time <span>1:20 seconds</span></h5>
+                    </div>
+
+
+                    <p><strong>Activity:</strong> Unloading Skids</p>
+                    <p><strong>Total Duration:</strong> 35 mins</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 50%;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn btn-warning col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? 'disabled' : ''; ?> id="startBtn">Pause</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-danger col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? '' : 'disabled'; ?> id="endBtn">End</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <table class="table table-striped table-bordered mt-2">
                     <thead>
                         <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Activity Name</th>
-                            <th scope="col">Start Time</th>
-                            <th scope="col">End Time</th>
                             <th scope="col">Duration</th>
+                            <th scope="col">Timeline</th>
+
                         </tr>
                     </thead>
-                    <tbody id="tbody">
-
+                    <tbody class="align-middle text-middle ">
+                        <tr class="align-middle">
+                            <th scope="row" class="align-middle">30 Mins</th>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2003</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2004">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2004</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2005">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2004</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2010">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2010</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step mb-0">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2020">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2020</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="align-middle">
+                            <th scope="row" class="align-middle">30 Mins</th>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2003</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2004">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2004</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2005">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2004</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2010">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2010</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-step mb-0">
+                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2020">
+                                                    <div class="inner-circle"></div>
+                                                    <p class="h6 mt-3 mb-1">2020</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
-                </table>
+                </table> -->
+                <div class="progress-section mt-2">
+                    <h4>Timeline</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Handle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
         </div>
-        <a style="float: right;" href="./php/logout.php">Logout</a>
-
     </div>
+
 
 
     <script src="assets/js/jquery.min.js"></script>
