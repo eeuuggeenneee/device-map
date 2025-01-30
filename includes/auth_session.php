@@ -1,7 +1,6 @@
 <?php
 // Set session cookie lifetime to 7 days (in seconds)
 ini_set('session.cookie_lifetime', 7 * 24 * 60 * 60);
-
 session_start();
 
 if (!isset($_SESSION["user"])) {

@@ -13,19 +13,60 @@ include("./includes/auth_session.php");
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
-    <!-- <link rel="stylesheet" href="assets/css/util.css" />
-   
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="assets/css/select2.css" />
-    <link rel="stylesheet" href="assets/css/select2.min.css" />
-    <link rel="stylesheet" href="assets/css/datatables.min.css" /> -->
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-thin.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-solid.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-regular.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-duotone-light.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-thin.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-solid.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-regular.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/sharp-light.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-thin.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-regular.css">
+
+    <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <!-- <link rel="stylesheet" href="assets/css/theme.min.css" /> -->
     <link rel="stylesheet" href="css/bootstrap1.min.css" />
     <link rel="stylesheet" href="css/metisMenu.css">
     <link rel="stylesheet" href="css/style1.css" />
     <link rel="stylesheet" href="css/colors/default.css" id="colorSkinCSS">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <style>
         #map {
@@ -181,7 +222,7 @@ include("./includes/auth_session.php");
             background: white;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 0.5rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -215,6 +256,7 @@ include("./includes/auth_session.php");
         }
 
         .task-section {
+            position: relative;
             flex: 3;
             background: white;
             border: 1px solid #ddd;
@@ -229,6 +271,7 @@ include("./includes/auth_session.php");
         }
 
         .task {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -325,6 +368,95 @@ include("./includes/auth_session.php");
             border-radius: 6.25rem;
             opacity: .5
         }
+
+        .task_selected {
+            background-color: lightblue;
+        }
+
+        .task_ongoing {
+            background-color: #f49025;
+        }
+
+        .task_skipped {
+            background-color: #62a0fc;
+        }
+
+        .task_completed {
+            background-color: #43bf57;
+        }
+
+        a.logout-link {
+            color: inherit;
+            /* Remove color */
+            text-decoration: none;
+            /* Optional: Removes underline */
+        }
+
+        .task-btns {
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            transform: translateX(-50%);
+            /* Center buttons horizontally */
+            display: flex;
+            gap: 10px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(244, 144, 37, 255);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        /* Style for the nav-pills to give a clean toggle effect */
+        .nav-pills {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .nav-pills .nav-item {
+            margin: 0 10px;
+        }
+
+        .nav-pills .nav-link {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Active state for the tabs */
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        /* Hover state for the tabs */
+        .nav-pills .nav-link:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        /* Optional: Add a subtle shadow to make it stand out */
+        .nav-pills .nav-link {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Add a border between tabs to make them look more like a toggle switch */
+        .nav-pills .nav-item:not(:last-child) .nav-link {
+            border-right: 2px solid #ccc;
+        }
     </style>
 
 </head>
@@ -332,9 +464,18 @@ include("./includes/auth_session.php");
 <body>
     <div id="map" style="display: none;"></div>
     <p id="info" style="display: none;">Distance: 0 meters</p>
+    <div class="py-2 px-4 bg-primary d-flex justify-content-between align-items-center">
+        <h2 class="text-white mt-2">Forklift Activity Monitoring</h2>
+
+        <a href="php/logout.php" class="logout-link text-middle">
+            <svg width="30" height="30" aria-hidden="true" focusable="false" data-prefix="far" data-icon="right-to-bracket" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="initial-icon svg-inline--fa fa-right-to-bracket fa-xl">
+                <path fill="currentColor" d="M192 365.8L302 256 192 146.2l0 53.8c0 13.3-10.7 24-24 24L48 224l0 64 120 0c13.3 0 24 10.7 24 24l0 53.8zM352 256c0 11.5-4.6 22.5-12.7 30.6L223.2 402.4c-8.7 8.7-20.5 13.6-32.8 13.6c-25.6 0-46.4-20.8-46.4-46.4l0-33.6-96 0c-26.5 0-48-21.5-48-48l0-64c0-26.5 21.5-48 48-48l96 0 0-33.6c0-25.6 20.8-46.4 46.4-46.4c12.3 0 24.1 4.9 32.8 13.6L339.3 225.4c8.1 8.1 12.7 19.1 12.7 30.6zm-8 176l80 0c22.1 0 40-17.9 40-40l0-272c0-22.1-17.9-40-40-40l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l80 0c48.6 0 88 39.4 88 88l0 272c0 48.6-39.4 88-88 88l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" class=""></path>
+            </svg>
+        </a>
+    </div>
     <div class="px-3 py-3">
         <div class="row">
-            <div class="col-6">
+            <div class="col-7">
                 <!-- <div class="task">
                         <div class="task-details">
                             <strong>Pick up Skid:</strong> Align forks and lift the skid.
@@ -344,94 +485,64 @@ include("./includes/auth_session.php");
                     </div> -->
                 <div class="progress-section">
                     <div class="card-body px-1 py-2">
+                        <h5 class="fw-bold">Select Workflow</h5>
                         <div class="d-flex justify-content-center">
                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <h2 class="nav-item" role="presentation">
+                                <h3 class="nav-item" role="presentation">
                                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Loading Tasks</button>
-                                </h2>
-                                <h2 class="nav-item" role="presentation">
+                                </h3>
+                                <h3 class="nav-item" role="presentation">
                                     <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Unloading Tasks</button>
-                                </h2>
+                                </h3>
                             </ul>
                         </div>
+
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <div class="px-3 py-3">
-                                    <?php
-                                    $query = "SELECT * FROM activity WHERE move_type = 'Loading'";
-                                    $result = sqlsrv_query($conn, $query);
-                                    if ($result === false) {
-                                        die(print_r(sqlsrv_errors(), true));
-                                    }
-                                    // Loop through results and display tasks
-                                    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                                    ?> <div class="task">
-                                            <div class="task-details">
-                                                <h6><strong><?php echo htmlspecialchars($row['name']); ?>:</strong> <?php echo htmlspecialchars($row['description']); ?></h6>
-                                            </div>
-                                            <button>START</button>
-                                            <button class="skip">SKIP</button>
-                                        </div>
-                                    <?php
-                                    }
-                                    ?>
+                                <div class="px-3 py-3" id="loading_container">
+
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                <div class="px-3 py-3">
-                                    <?php
-                                    $query = "SELECT * FROM activity WHERE move_type = 'Unloading'";
-                                    $result = sqlsrv_query($conn, $query);
+                                <div class="px-3 py-3" id="unloading_container">
 
-                                    if ($result === false) {
-                                        die(print_r(sqlsrv_errors(), true));
-                                    }
-
-                                    // Loop through results and display tasks
-                                    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                                    ?> <div class="task">
-                                            <div class="task-details">
-                                                <h6><strong><?php echo htmlspecialchars($row['name']); ?>:</strong> <?php echo htmlspecialchars($row['description']); ?></h6>
-                                            </div>
-                                            <button>START</button>
-                                            <button class="skip">SKIP</button>
-                                        </div>
-                                    <?php
-                                    }
-                                    ?>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="col-6">
-                <div class="progress-section">
+            <div class="col-5">
+                <div class="progress-section py-4 px-3">
                     <div class="d-flex">
-                        <h2>Current Activity</h2>
-                        <h5 class="ms-auto">Elapse Time <span>1:20 seconds</span></h5>
+                        <h3 class="fw-semibold">Current Activity</h3>
                     </div>
+                    <h5 class="ms-auto"><span class="fw-bold" id="c_activity">No activity selected</span></h5>
 
+                    <h5 class="ms-auto">Activity Elapsed Time: <br><span class="fw-bold" id="atime_lapse"></span></h5>
+                    <h5 class="ms-auto">Total Elapsed Time: <br><span class="fw-bold" id="time_lapse"></span></h5>
+                    <h5 class="text-center fw-bold border-top" id="skid_count"></h5>
 
-                    <p><strong>Activity:</strong> Unloading Skids</p>
-                    <p><strong>Total Duration:</strong> 35 mins</p>
                     <div class="progress-bar-container">
                         <div class="progress-bar">
-                            <div class="progress" style="width: 50%;"></div>
+                            <div class="progress" id="progress_bar"></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="start_run">
+                        <div class="col-12">
+                            <button class="btn btn-success col-12 btn-block text-white" id="startBtn">Start Run</button>
+                        </div>
+                    </div>
+                    <div class="row d-none" id="buttonActivity">
                         <div class="col-6">
-                            <button class="btn btn-warning col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? 'disabled' : ''; ?> id="startBtn">Pause</button>
+                            <button class="btn btn-info col-12 btn-block text-white" id="pauseBtn">Pause Run</button>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-danger col-12 btn-block" <?php echo isset($yesnull) && $yesnull ? '' : 'disabled'; ?> id="endBtn">End</button>
+                            <button class="btn btn-danger col-12 btn-block" id="endBtn">End Run</button>
                         </div>
                     </div>
                 </div>
-
                 <!-- <table class="table table-striped table-bordered mt-2">
                     <thead>
                         <tr>
@@ -525,49 +636,36 @@ include("./includes/auth_session.php");
                         </tr>
                     </tbody>
                 </table> -->
-                <div class="progress-section mt-2">
+                <!-- <div class="progress-section mt-2">
                     <h4>Timeline</h4>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Run type</th>
+                                <th scope="col">Run start</th>
+                                <th scope="col">Run end</th>
+                                <th scope="col">Duration</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
+                                <th scope="row">Loading</th>
+                                <td>2025-01-30 00:04:00</td>
+                                <td>2025-01-30 01:04:00 </td>
+                                <td>1 Hour</td>
                             </tr>
                             <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
+                                <th scope="row">Loading</th>
+                                <td>2025-01-30 00:04:00</td>
+                                <td>2025-01-30 01:04:00 </td>
+                                <td>1 Hour</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
-
-
-
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -578,7 +676,6 @@ include("./includes/auth_session.php");
     <script src="https://unpkg.com/@turf/turf"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
     <script>
         var tempselectedValue = 1;
         var selectedValue = 1;
@@ -586,6 +683,19 @@ include("./includes/auth_session.php");
         var checkboxes = document.querySelectorAll('.todo-checkbox');
         var textinside = document.getElementById('textinside');
         var tbody = document.getElementById('tbody');
+        var buttonActivity = document.getElementById('buttonActivity');
+        var start_run = document.getElementById('start_run')
+        var time_lapse = document.getElementById('time_lapse');
+        var atime_lapse = document.getElementById('atime_lapse');
+        var progress_bar = document.getElementById('progress_bar')
+        var skid_count_element = document.getElementById('skid_count');
+        var activity_sequence = "";
+        var run_id = null;
+        var current_activity = document.getElementById('c_activity');
+        var move_type = null;
+        var activity_id = null;
+        var run_start_time = null;
+        var mount = false;
         $(document).ready(function() {
             $('#completedActivityTable').DataTable({
                 paging: true,
@@ -625,7 +735,83 @@ include("./includes/auth_session.php");
                 error: function() {}
             });
         }
+        let skid_count = 0;
+      
+        function fetch_skid() {
+            var user_id = <?php echo $_SESSION['user_id'] ?>;
+            let text = '';
+            $.ajax({
+                url: 'php/fetch_user.php?user_id=' + user_id + '&run_id=' + run_id, // Replace with the actual server-side script to fetch data
+                type: 'GET',
+                success: function(data) {
+                    skid_count = 0;
+                    let parsedData = JSON.parse(data); // Parse the JSON string back into an object/array
+                    parsedData.forEach(element => {
+                        if(move_type == "Loading"){
+                            text = 'Loaded';
+                            if (element.activity_id == 6) {
+                                skid_count++;  
+                            }
+                        }else{
+                            text = 'Unloaded';
+                            if (element.activity_id == 15) {
+                                skid_count++;  
+                            }
+                        }
+                    });
+                    skid_count_element.innerHTML = skid_count + ' Skid ' + text;
+                },
+                error: function() {}
+            });
+        }
+        fetch_skid();
+        function task_selected(value, activity_sequence, type, btn_click) {
+            activity_sequence = activity_sequence;
+            if (activity_sequence == 1) {
+                start_run.classList.remove('d-none');
+            } else {
+                buttonActivity.classList.remove('d-none');
+            }
+            $.post('php/add_activity.php', {
+                user: <?php echo $_SESSION['user_id'] ?>,
+                activity: value,
+                activity_sequence: activity_sequence,
+                run_id: run_id ?? '0',
+                remarks: btn_click,
+            }).done(function(response) {
+                console.log(response);
+            }).fail(function(error) {
+                console.error("Error sending data to the server:", error);
+            });
 
+            if (type == 'loading') {
+                progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
+            } else {
+                progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
+            }
+
+
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'Moving to the next step...',
+                icon: 'success',
+                showConfirmButton: false, // No need for a confirm button
+                timer: 1500 // 1.5 seconds
+            }).then(() => {
+                fetchActivities(activity_sequence, type);
+                fetch_skid();
+            });
+
+            selectedValue = value;
+            console.log('Selected Value is ' + value);
+            const allTasks = document.querySelectorAll('.task');
+            allTasks.forEach(task => {
+                task.classList.remove('task_selected');
+            });
+            // document.getElementById('task_' + type + '_' + value).classList.add('task_selected')
+
+        }
 
         function onLocationFound(e) {
             // if (current_position) {
@@ -661,54 +847,183 @@ include("./includes/auth_session.php");
         function onLocationError(e) {
             alert(e.message);
         }
-        //lc.start();
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                // Uncheck all checkboxes
-                checkboxes.forEach(function(otherCheckbox) {
-                    if (otherCheckbox !== checkbox) {
-                        otherCheckbox.checked = false;
-                        resetTodoItemStyles(otherCheckbox);
-                    }
-                });
-
-                tempselectedValue = checkbox.value;
-                console.log("Checkbox checked. Value: " + tempselectedValue);
-
-                // Change the background color of the checked checkbox
-                let todoItem = checkbox.closest('.todo-item');
-                let cardSection = todoItem.querySelector('.card-section');
-
-                if (checkbox.checked) {
-                    todoItem.style.backgroundColor = 'lightblue'; // Change to your desired background color
-                    cardSection.style.backgroundColor = 'lightblue';
-                } else {
-                    resetTodoItemStyles(checkbox);
-                }
-            });
-        });
 
         function resetTodoItemStyles(checkbox) {
             let todoItem = checkbox.closest('.todo-item');
             let cardSection = todoItem.querySelector('.card-section');
-
             todoItem.style.backgroundColor = ''; // Reset background color if unchecked
             cardSection.style.backgroundColor = '';
         }
+        let alertShown = false;
+
+        function getLapseTime(run_start_time) {
+            // Convert `run_start_time` to a Date object if it's not already
+            if (typeof run_start_time === "string") {
+                run_start_time = new Date(run_start_time);
+            }
+
+            // Get current time in New York
+            const now = new Date().toLocaleString("en-US", {
+                timeZone: "America/New_York"
+            });
+            const newYorkTime = new Date(now); // Convert to Date object
+
+            // Calculate time difference in milliseconds
+            const diffMs = newYorkTime - run_start_time;
+
+            // Convert milliseconds to a human-readable format
+            const diffSeconds = Math.floor(diffMs / 1000) % 60;
+            const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60)) % 24;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            // Format the difference
+            let humanDiff = "";
+            if (diffDays > 0) humanDiff += diffDays + " days ";
+            if (diffHours > 0) humanDiff += diffHours + " hours ";
+            if (diffMinutes > 0) humanDiff += diffMinutes + " minutes ";
+            if (diffSeconds > 0) humanDiff += diffSeconds + " seconds";
+            return humanDiff.trim();
+        }
+
+        function fetchUserActivity() {
+            $.ajax({
+                url: 'php/fetch_user_activity.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.error) {
+                        run_id = 0
+                    } else {
+                        current_activity.innerHTML = data.activity_name + ': ' + data.description + '';
+                        start_run.classList.add('d-none')
+                        buttonActivity.classList.remove('d-none');
+                        if (data.activity_sequence == 0) {
+                            const allTasks = document.querySelectorAll('.task');
+                            allTasks.forEach(task => {
+                                task.classList.remove('task_selected');
+                            });
+                        }
+                        run_id = data.run_id;
+                        move_type = data.move_type;
+                        activity_sequence = data.activity_sequence;
+                        activity_id = data.id;
+                        run_start_time = data.run_start_time['date'];
+                        time_lapse.innerHTML = getLapseTime(run_start_time);
+                        atime_lapse.innerHTML = getLapseTime(data.start_time['date']);
+
+                        if (data.pause_id && !alertShown) {
+                            Swal.fire({
+                                title: 'Pause Detected!',
+                                text: 'This alert cannot be closed until it is resumed.',
+                                icon: 'warning',
+                                showConfirmButton: true,
+                                confirmButtonText: 'Resume',
+                                allowOutsideClick: false, // Disable closing by clicking outside
+                                allowEscapeKey: false, // Disable closing by pressing the escape key
+                            }).then((result) => {
+                                alertShown = true;
+
+                                if (result.isConfirmed) { // Only trigger if the user clicks "Resume"
+                                    resume_activity();
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
+        function resume_activity() {
+            alertShown = false;
+
+            $.ajax({
+                url: 'php/resume_activity.php', // Your PHP script
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    user_id: <?php echo $_SESSION['user_id']; ?>,
+                },
+                success: function(response) {
+                    // Handle the response (you can show a success message or handle other logic)
+                    if (response.message) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Okay'
+                        });
+                    } else if (response.error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.error,
+                            icon: 'error',
+                            confirmButtonText: 'Okay'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle AJAX errors
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while updating the pause history.',
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                    });
+                }
+            });
+        }
 
         document.getElementById("startBtn").addEventListener("click", function() {
-            selectedValue = tempselectedValue;
+            var taskBtns = document.querySelectorAll(".task_btns");
+            taskBtns.forEach(function(taskBtn) {
+                taskBtn.classList.remove("d-none");
+            });
+
+            mount = true;
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
-                activity: selectedValue,
+                activity: 1,
+                activity_sequence: 0,
+                run_id: 0,
+                remarks: 'Start',
             }).done(function(response) {
                 console.log(response); // Log the response from the server
-                updateTable();
+
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
-        });
 
+        });
+        document.getElementById("pauseBtn").addEventListener("click", function() {
+            var data = {
+                run_id: run_id,
+                user_id: <?php echo $_SESSION['user_id'] ?>,
+                activity_id: activity_id,
+            };
+            $.ajax({
+                url: 'php/pause_activity.php', // Adjust the URL to your PHP file
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    // Handle the success response
+                    console.log("Response:", response);
+                    if (response.message) {
+                        alert(response.message); // Show success message
+                    } else if (response.error) {
+                        alert("Error: " + response.error); // Show error message
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        });
         document.getElementById("endBtn").addEventListener("click", function() {
             selectedValue = tempselectedValue;
             $.post('php/update_activity.php', {
@@ -717,26 +1032,67 @@ include("./includes/auth_session.php");
                 document.querySelectorAll('.card').forEach(function(cardSelect) {
                     cardSelect.classList.remove('disabled');
                 });
-                updateTable();
-            }).fail(function(error) {
-                // console.error("Error sending data to the server:", error);
-            });
-
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = false;
-                checkbox.disabled = false;
-                // Reset background color of the card section
-                let cardSection = checkbox.closest('.todo-item').querySelector('.card-section');
-
-
-                cardSection.style.backgroundColor = '';
-                resetTodoItemStyles(checkbox);
-            });
-            whatf = "";
-            selectedValue = 1;
+            }).fail(function(error) {});
         });
 
-        updateTable();
+        function fetchActivities(activity_sequence, type) {
+            $.ajax({
+                url: 'php/fetch_activity.php?activity_sequence=' + activity_sequence + '&move_type=' + type, // Path to your PHP file
+                type: 'GET',
+                dataType: 'json', // Expecting a JSON response
+                success: function(data) {
+                    $('#' + type + '_container').html('');
+
+                    if (data.length > 0) {
+
+                        data.forEach(function(activity, index) {
+                            let btns = ``;
+                            let overlay = '';
+
+
+                            if (activity_sequence == 0) {
+                                if (activity.activity_sequence == 1) {
+                                    btns = `<button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Completed')">START</button>
+                                    <button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" class="skip">Skip</button>`;
+                                }
+                            } else if (activity.activity_sequence == (parseInt(activity_sequence)) && activity.move_type == move_type) {
+                                console.log(data[index + 1]);
+                                overlay = `<div class="overlay"></div>`;
+                                btns = `<div class="task-btns d-flex">
+                                    <div class="blur"></div>
+                                    <button class="btn-success task-btn" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Completed')">Complete Task</button>
+                                    <button id="" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Skipped')" class="skip">Skip</button>
+                                </div>`;
+                            }
+                            let show = '';
+                            if (activity_sequence == 0) {
+                                show = 'd-none'
+                            }
+                            let activityHtml = `
+                                <div class="task py-3 px-3" id="task_${activity.move_type.toLowerCase()}_${activity.id}">
+                                    ${overlay}
+                                    <div class="task-details">
+                                        <h6><strong>${activity.name}:</strong> ${activity.description}</h6>
+                                    </div>
+                                    <div class="task_btns ${show}">
+                                        ${btns}
+                                    </div>
+                                </div>
+                            `;
+                            $('#' + type + '_container').append(activityHtml); // Append to the container
+                        });
+                    } else {
+                        console.log('No activities found');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching activities:', error);
+                }
+            });
+        }
+
+
+        // updateTable();
         map.on('locationfound', onLocationFound);
 
         function locate() {
@@ -747,6 +1103,25 @@ include("./includes/auth_session.php");
                 enableHighAccuracy: true
             });
         }
+        fetchActivities(0, 'loading');
+        fetchActivities(0, 'unloading');
+        setInterval(function() {
+            map.locate({
+                enableHighAccuracy: true,
+                timeout: 100,
+                maximumAge: 150
+            });
+            fetchUserActivity();
+            console.log('Run id ' + run_id);
+            console.log('Move Type ' + move_type);
+            console.log('Activity Sequence ' + activity_sequence);
+
+            if (!mount && activity_sequence) {
+                fetchActivities(activity_sequence, 'loading');
+                fetchActivities(activity_sequence, 'unloading');
+                mount = true;
+            }
+        }, 1000);
 
         setInterval(function() {
             map.locate({

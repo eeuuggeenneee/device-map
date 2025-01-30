@@ -22,7 +22,7 @@ if ($conn) {
     if ($stmt === false) {
         // die(print_r(sqlsrv_errors(), true));
     } else {
-        echo "Record inserted successfully.";
+        // echo "Record inserted successfully.";
     }
     
     sqlsrv_close($conn);
