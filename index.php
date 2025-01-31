@@ -395,7 +395,7 @@ include("./includes/auth_session.php");
         .task-btns {
             position: absolute;
             left: 50%;
-            top: 10%;
+            top: 20%;
             transform: translateX(-50%);
             /* Center buttons horizontally */
             display: flex;
@@ -457,6 +457,33 @@ include("./includes/auth_session.php");
         .nav-pills .nav-item:not(:last-child) .nav-link {
             border-right: 2px solid #ccc;
         }
+
+        .play_task {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .load-more {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        #loading_container {
+            min-height: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            /* Enables vertical scrolling */
+        }
+
+        #unloading_container {
+            min-height: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            /* Enables vertical scrolling */
+        }
     </style>
 
 </head>
@@ -485,7 +512,7 @@ include("./includes/auth_session.php");
                     </div> -->
                 <div class="progress-section">
                     <div class="card-body px-1 py-2">
-                        <h5 class="fw-bold">Select Workflow</h5>
+                        <h3 class="fw-semibold">Select Workflow</h3>
                         <div class="d-flex justify-content-center">
                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                 <h3 class="nav-item" role="presentation">
@@ -502,10 +529,21 @@ include("./includes/auth_session.php");
                                 <div class="px-3 py-3" id="loading_container">
 
                                 </div>
+                                <div class="text-center">
+                                    <a class="load-more">
+                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" onclick="fetchActivities(99,'loading')"></i>Load more
+                                    </a>
+                                </div>
+
                             </div>
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                 <div class="px-3 py-3" id="unloading_container">
 
+                                </div>
+                                <div class="text-center">
+                                    <a class="load-more">
+                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" onclick="fetchActivities(99,'loading')"></i>Load more
+                                    </a>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
@@ -689,8 +727,10 @@ include("./includes/auth_session.php");
         var atime_lapse = document.getElementById('atime_lapse');
         var progress_bar = document.getElementById('progress_bar')
         var skid_count_element = document.getElementById('skid_count');
+        var progress_percent = document.getElementById('progress_percent');
         var activity_sequence = "";
         var run_id = null;
+        var loadmore = document.getElementById('loadmore');
         var current_activity = document.getElementById('c_activity');
         var move_type = null;
         var activity_id = null;
@@ -736,7 +776,7 @@ include("./includes/auth_session.php");
             });
         }
         let skid_count = 0;
-      
+
         function fetch_skid() {
             var user_id = <?php echo $_SESSION['user_id'] ?>;
             let text = '';
@@ -747,31 +787,34 @@ include("./includes/auth_session.php");
                     skid_count = 0;
                     let parsedData = JSON.parse(data); // Parse the JSON string back into an object/array
                     parsedData.forEach(element => {
-                        if(move_type == "Loading"){
+                        if (move_type == "Loading") {
                             text = 'Loaded';
                             if (element.activity_id == 6) {
-                                skid_count++;  
+                                skid_count++;
                             }
-                        }else{
+                        } else {
                             text = 'Unloaded';
                             if (element.activity_id == 15) {
-                                skid_count++;  
+                                skid_count++;
                             }
                         }
                     });
-                    skid_count_element.innerHTML = skid_count + ' Skid ' + text;
+                    let text2 = 'Skids';
+                    if (skid_count < 1) {
+                        text2 = 'Skid';
+                    }
+                    skid_count_element.innerHTML = skid_count + ' ' + text2 + ' ' + text;
                 },
                 error: function() {}
             });
         }
-        fetch_skid();
+
+        setTimeout(() => {
+            fetch_skid();
+        }, 2000);
+
         function task_selected(value, activity_sequence, type, btn_click) {
             activity_sequence = activity_sequence;
-            if (activity_sequence == 1) {
-                start_run.classList.remove('d-none');
-            } else {
-                buttonActivity.classList.remove('d-none');
-            }
             $.post('php/add_activity.php', {
                 user: <?php echo $_SESSION['user_id'] ?>,
                 activity: value,
@@ -783,14 +826,13 @@ include("./includes/auth_session.php");
             }).fail(function(error) {
                 console.error("Error sending data to the server:", error);
             });
-
-            if (type == 'loading') {
-                progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
-            } else {
-                progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
-            }
-
-
+            setTimeout(() => {
+                if (type == 'loading') {
+                    progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
+                } else {
+                    progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
+                }
+            }, 1000);
 
             Swal.fire({
                 title: 'Success!',
@@ -979,65 +1021,105 @@ include("./includes/auth_session.php");
         }
 
         document.getElementById("startBtn").addEventListener("click", function() {
-            var taskBtns = document.querySelectorAll(".task_btns");
-            taskBtns.forEach(function(taskBtn) {
-                taskBtn.classList.remove("d-none");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to start the run?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, start it!",
+                cancelButtonText: "No, cancel",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var taskBtns = document.querySelectorAll(".task_btns");
+                    taskBtns.forEach(function(taskBtn) {
+                        taskBtn.classList.remove("d-none");
+                    });
+
+
+                    mount = true;
+                    $.post('php/add_activity.php', {
+                        user: <?php echo $_SESSION['user_id'] ?>,
+                        activity: 1,
+                        activity_sequence: 0,
+                        run_id: 0,
+                        remarks: 'Start',
+                    }).done(function(response) {
+                        console.log(response); // Log the response from the server
+
+                    }).fail(function(error) {
+                        console.error("Error sending data to the server:", error);
+                    });
+                }
             });
 
-            mount = true;
-            $.post('php/add_activity.php', {
-                user: <?php echo $_SESSION['user_id'] ?>,
-                activity: 1,
-                activity_sequence: 0,
-                run_id: 0,
-                remarks: 'Start',
-            }).done(function(response) {
-                console.log(response); // Log the response from the server
-
-            }).fail(function(error) {
-                console.error("Error sending data to the server:", error);
-            });
 
         });
         document.getElementById("pauseBtn").addEventListener("click", function() {
-            var data = {
-                run_id: run_id,
-                user_id: <?php echo $_SESSION['user_id'] ?>,
-                activity_id: activity_id,
-            };
-            $.ajax({
-                url: 'php/pause_activity.php', // Adjust the URL to your PHP file
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    // Handle the success response
-                    console.log("Response:", response);
-                    if (response.message) {
-                        alert(response.message); // Show success message
-                    } else if (response.error) {
-                        alert("Error: " + response.error); // Show error message
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to pause the run?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, pause it!",
+                cancelButtonText: "No, continue",
+                reverseButtons: true
+            }).then((result) => {
+                var data = {
+                    run_id: run_id,
+                    user_id: <?php echo $_SESSION['user_id'] ?>,
+                    activity_id: activity_id,
+                };
+                $.ajax({
+                    url: 'php/pause_activity.php', // Adjust the URL to your PHP file
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        // Handle the success response
+                        console.log("Response:", response);
+                        if (response.message) {
+                            alert(response.message); // Show success message
+                        } else if (response.error) {
+                            alert("Error: " + response.error); // Show error message
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                }
+                });
             });
+
         });
         document.getElementById("endBtn").addEventListener("click", function() {
-            selectedValue = tempselectedValue;
-            $.post('php/update_activity.php', {
-                user: <?php echo $_SESSION['user_id'] ?>,
-            }).done(function(response) {
-                document.querySelectorAll('.card').forEach(function(cardSelect) {
-                    cardSelect.classList.remove('disabled');
-                });
-            }).fail(function(error) {});
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to end the run? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, end it!",
+                cancelButtonText: "No, keep running",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('php/update_activity.php', {
+                        user: <?php echo $_SESSION['user_id'] ?>,
+                    }).done(function(response) {
+                        document.querySelectorAll('.card').forEach(function(cardSelect) {
+                            cardSelect.classList.remove('disabled');
+                        });
+                        location.reload();
+                    }).fail(function(error) {
+                        console.error("Error:", error);
+                    });
+                }
+            });
+
         });
 
-        function fetchActivities(activity_sequence, type) {
+        function fetchActivities(current_sequence, type) {
             $.ajax({
-                url: 'php/fetch_activity.php?activity_sequence=' + activity_sequence + '&move_type=' + type, // Path to your PHP file
+                url: 'php/fetch_activity.php?activity_sequence=' + current_sequence + '&move_type=' + type + '&running_sequence=' + activity_sequence, // Path to your PHP file
                 type: 'GET',
                 dataType: 'json', // Expecting a JSON response
                 success: function(data) {
@@ -1048,31 +1130,36 @@ include("./includes/auth_session.php");
                         data.forEach(function(activity, index) {
                             let btns = ``;
                             let overlay = '';
+                            let playbtn = '';
+                            let show = '';
+                            console.log('pumasok ba??', activity.activity_sequence == (parseInt(current_sequence)) && activity.move_type == move_type);
 
-
-                            if (activity_sequence == 0) {
+                            if (current_sequence == 0) {
                                 if (activity.activity_sequence == 1) {
                                     btns = `<button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Completed')">START</button>
                                     <button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" class="skip">Skip</button>`;
                                 }
                             } else if (activity.activity_sequence == (parseInt(activity_sequence)) && activity.move_type == move_type) {
-                                console.log(data[index + 1]);
+                                console.log('Activity Sequence:', activity.activity_sequence);
                                 overlay = `<div class="overlay"></div>`;
                                 btns = `<div class="task-btns d-flex">
                                     <div class="blur"></div>
                                     <button class="btn-success task-btn" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Completed')">Complete Task</button>
                                     <button id="" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Skipped')" class="skip">Skip</button>
                                 </div>`;
+
+                            } else {
+                                playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Skipped')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
                             }
-                            let show = '';
-                            if (activity_sequence == 0) {
+
+                            if (current_sequence == 0) {
                                 show = 'd-none'
                             }
                             let activityHtml = `
                                 <div class="task py-3 px-3" id="task_${activity.move_type.toLowerCase()}_${activity.id}">
                                     ${overlay}
-                                    <div class="task-details">
-                                        <h6><strong>${activity.name}:</strong> ${activity.description}</h6>
+                                    <div class="task-details d-flex">
+                                        ${playbtn}<h6><strong>${activity.name}:</strong> ${activity.description}</h6>
                                     </div>
                                     <div class="task_btns ${show}">
                                         ${btns}
@@ -1105,18 +1192,16 @@ include("./includes/auth_session.php");
         }
         fetchActivities(0, 'loading');
         fetchActivities(0, 'unloading');
+
         setInterval(function() {
-            map.locate({
-                enableHighAccuracy: true,
-                timeout: 100,
-                maximumAge: 150
-            });
+
             fetchUserActivity();
-            console.log('Run id ' + run_id);
-            console.log('Move Type ' + move_type);
+            // console.log('Run id ' + run_id);
+            // console.log('Move Type ' + move_type);
             console.log('Activity Sequence ' + activity_sequence);
 
             if (!mount && activity_sequence) {
+                console.log('hehe puimas2k')
                 fetchActivities(activity_sequence, 'loading');
                 fetchActivities(activity_sequence, 'unloading');
                 mount = true;

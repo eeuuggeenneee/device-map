@@ -25,7 +25,7 @@ if ($run_id && $user_id) {
     if ($query === false) {
         die(print_r(sqlsrv_errors(), true));
     } else {
-        echo json_encode(["message" => "Record inserted successfully."]);
+        // echo json_encode(["message" => "Record inserted successfully."]);
     }
 } else {
     echo json_encode(["error" => "Missing required fields."]);
