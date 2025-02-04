@@ -238,7 +238,7 @@ include("./includes/auth_session.php");
         .progress-bar {
             width: 100%;
             height: 12px;
-            background-color: #e0e0e0;
+            background-color: #e8e8e8;
             border-radius: 6px;
             overflow: hidden;
             position: relative;
@@ -246,7 +246,7 @@ include("./includes/auth_session.php");
 
         .progress-bar .progress {
             height: 100%;
-            background-color: #007acc;
+            background-color: #198754;
             width: 0;
             transition: width
         }
@@ -471,24 +471,15 @@ include("./includes/auth_session.php");
             text-decoration: none;
         }
 
-        #loading_container {
-            min-height: 270px;
-            max-height: 270px;
-            overflow-y: auto;
-            /* Enables vertical scrolling */
-        }
-
-        #unloading_container {
-            min-height: 270px;
-            max-height: 270px;
-            overflow-y: auto;
-            /* Enables vertical scrolling */
+        .btn-large {
+            width: 50%;
+            height: 70px;
         }
     </style>
 
 </head>
 
-<body>
+<body class="bg-light">
     <div id="map" style="display: none;"></div>
     <p id="info" style="display: none;">Distance: 0 meters</p>
     <div class="py-2 px-4 bg-primary d-flex justify-content-between align-items-center">
@@ -502,84 +493,51 @@ include("./includes/auth_session.php");
     </div>
     <div class="px-3 py-3">
         <div class="row">
-            <div class="col-7">
-                <!-- <div class="task">
-                        <div class="task-details">
-                            <strong>Pick up Skid:</strong> Align forks and lift the skid.
-                        </div>
-                        <button>START</button>
-                        <button class="skip">SKIP</button>
-                    </div> -->
-                <div class="progress-section">
-                    <div class="card-body px-1 py-2">
-                        <h3 class="fw-semibold">Select Workflow</h3>
-                        <div class="d-flex justify-content-center">
-                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <h3 class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Loading Tasks</button>
-                                </h3>
-                                <h3 class="nav-item" role="presentation">
-                                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Unloading Tasks</button>
-                                </h3>
-                            </ul>
-                        </div>
-
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <div class="px-3 py-3" id="loading_container">
-
-                                </div>
-                                <div class="text-center">
-                                    <a class="load-more" onclick="fetchActivities(99,'loading')">
-                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" ></i>Load more
-                                    </a>
-                                </div>
-
+            <div class="col-5">
+                <div class="card shadow" id="get_height">
+                    <div class="card-header bg-primary">
+                        <h5 class="ms-auto text-center text-white">Total Elapsed Time: <span class="fw-bold" id="time_lapse"></span></h5>
+                        <h5 class="text-center fw-bold text-white" id="skid_count"></h5>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress" id="progress_bar"></div>
                             </div>
-                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                <div class="px-3 py-3" id="unloading_container">
-
-                                </div>
-                                <div class="text-center">
-                                    <a class="load-more" onclick="fetchActivities(99,'unloading')">
-                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" ></i>Load more
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
                         </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center">
+                            <h2 class="fw-semibold"><span id="move_type_t"></span></h2>
+                            <div class="d-flex d-none ms-auto gap-2" id="buttonActivity">
+                                <button class="btn btn-info text-white" id="pauseBtn">Pause Task</button>
+                                <button class="btn btn-danger" id="endBtn">End Task</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex">
+                            <h4 class="fw-semibold">Current Activity</h4>
+                        </div>
+                        <button class="btn-success task-btn btn btn-large" id="complete_task">Complete Task</button>
+                        <h5 class="ms-auto"><span class="fw-bold" style="font-size: 15px;" id="c_activity">No activity selected</span></h5>
+                        <h5 class="ms-auto">Activity Elapsed Time: <span class="fw-bold" id="atime_lapse"></span></h5>
                     </div>
                 </div>
             </div>
-            <div class="col-5">
-                <div class="progress-section py-4 px-3">
-                    <div class="d-flex">
-                        <h3 class="fw-semibold">Current Activity</h3>
+            <div class="col-7">
+                <div class="card shadow" id="set_height">
+                    <div class="card-header bg-primary align-middle">
+                        <h3 class="text-white mt-2"><span id="move_type2"></span> Activity List</h3>
                     </div>
-                    <h5 class="ms-auto"><span class="fw-bold" id="c_activity">No activity selected</span></h5>
-
-                    <h5 class="ms-auto">Activity Elapsed Time: <br><span class="fw-bold" id="atime_lapse"></span></h5>
-                    <h5 class="ms-auto">Total Elapsed Time: <br><span class="fw-bold" id="time_lapse"></span></h5>
-                    <h5 class="text-center fw-bold border-top" id="skid_count"></h5>
-
-                    <div class="progress-bar-container">
-                        <div class="progress-bar">
-                            <div class="progress" id="progress_bar"></div>
+                    <div class="card-body">
+                        <div id="container_activity" style="overflow-y: auto; height: 300px;">
+                            <!-- Content goes here -->
                         </div>
+
                     </div>
-                    <div class="row" id="start_run">
+                    <!-- <div class="row" id="start_run">
                         <div class="col-12">
                             <button class="btn btn-success col-12 btn-block text-white" id="startBtn">Start Run</button>
                         </div>
-                    </div>
-                    <div class="row d-none" id="buttonActivity">
-                        <div class="col-6">
-                            <button class="btn btn-info col-12 btn-block text-white" id="pauseBtn">Pause Run</button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-danger col-12 btn-block" id="endBtn">End Run</button>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- <table class="table table-striped table-bordered mt-2">
                     <thead>
@@ -728,6 +686,9 @@ include("./includes/auth_session.php");
         var progress_bar = document.getElementById('progress_bar')
         var skid_count_element = document.getElementById('skid_count');
         var progress_percent = document.getElementById('progress_percent');
+        var complete_task = document.getElementById('complete_task');
+        var move_type2 = document.getElementById('move_type2');
+        var move_type_t = document.getElementById('move_type_t');
         var activity_sequence = "";
         var run_id = null;
         var loadmore = document.getElementById('loadmore');
@@ -800,7 +761,7 @@ include("./includes/auth_session.php");
                         }
                     });
                     let text2 = 'Skids';
-                    if (skid_count < 1) {
+                    if (skid_count <= 1) {
                         text2 = 'Skid';
                     }
                     skid_count_element.innerHTML = skid_count + ' ' + text2 + ' ' + text;
@@ -809,48 +770,120 @@ include("./includes/auth_session.php");
             });
         }
 
+        function copyHeight() {
+            let getElement = document.getElementById('get_height');
+            let setElement = document.getElementById('set_height');
+            let set_height2 = document.getElementById('container_activity');
+
+            if (getElement && setElement) {
+                let height = getElement.offsetHeight; // Get the height
+                setElement.style.height = height + 'px'; // Set the height
+                set_height2.style.height = (height - 100) + 'px'; // Set the height
+            }
+        }
+
         setTimeout(() => {
             fetch_skid();
         }, 2000);
 
         function task_selected(value, activity_sequence, type, btn_click) {
             activity_sequence = activity_sequence;
-            $.post('php/add_activity.php', {
-                user: <?php echo $_SESSION['user_id'] ?>,
-                activity: value,
-                activity_sequence: activity_sequence,
-                run_id: run_id ?? '0',
-                remarks: btn_click,
-            }).done(function(response) {
-                console.log(response);
-            }).fail(function(error) {
-                console.error("Error sending data to the server:", error);
-            });
-            setTimeout(() => {
-                if (type == 'loading') {
-                    progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
-                } else {
-                    progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
-                }
-            }, 1000);
 
-            Swal.fire({
-                title: 'Success!',
-                text: 'Moving to the next step...',
-                icon: 'success',
-                showConfirmButton: false, // No need for a confirm button
-                timer: 1500 // 1.5 seconds
-            }).then(() => {
-                fetchActivities(activity_sequence, type);
-                fetch_skid();
-            });
+            if (btn_click == 'Skipped') {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you want to skip to this step?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, skip!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.post('php/add_activity.php', {
+                            user: <?php echo $_SESSION['user_id'] ?>,
+                            activity: value,
+                            activity_sequence: activity_sequence,
+                            run_id: run_id ?? '0',
+                            remarks: btn_click,
+                        }).done(function(response) {
+                            console.log(response);
+                        }).fail(function(error) {
+                            console.error("Error sending data to the server:", error);
+                        });
+                        console.log("User confirmed skipping.");
+                        setTimeout(() => {
+                            if (type == 'loading') {
+                                progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
+                            } else {
+                                progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
+                            }
+                        }, 1000);
 
-            selectedValue = value;
-            console.log('Selected Value is ' + value);
-            const allTasks = document.querySelectorAll('.task');
-            allTasks.forEach(task => {
-                task.classList.remove('task_selected');
-            });
+
+
+                        selectedValue = value;
+                        console.log('Selected Value is ' + value);
+                        const allTasks = document.querySelectorAll('.task');
+                        allTasks.forEach(task => {
+                            task.classList.remove('task_selected');
+                        });
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Moving to the next step...',
+                            icon: 'success',
+                            showConfirmButton: false, // No need for a confirm button
+                            timer: 1500 // 1.5 seconds
+                        }).then(() => {
+                            fetchActivities(activity_sequence, type);
+                            fetch_skid();
+                        });
+
+                    }
+                });
+
+            } else if (btn_click == 'Completed') {
+                $.post('php/add_activity.php', {
+                    user: <?php echo $_SESSION['user_id'] ?>,
+                    activity: value,
+                    activity_sequence: activity_sequence,
+                    run_id: run_id ?? '0',
+                    remarks: btn_click,
+                }).done(function(response) {
+                    console.log(response);
+                }).fail(function(error) {
+                    console.error("Error sending data to the server:", error);
+                });
+                setTimeout(() => {
+                    if (type == 'loading') {
+                        progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
+                    } else {
+                        progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
+                    }
+                }, 1000);
+
+
+
+                selectedValue = value;
+                console.log('Selected Value is ' + value);
+                const allTasks = document.querySelectorAll('.task');
+                allTasks.forEach(task => {
+                    task.classList.remove('task_selected');
+                });
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Moving to the next step...',
+                    icon: 'success',
+                    showConfirmButton: false, // No need for a confirm button
+                    timer: 1500 // 1.5 seconds
+                }).then(() => {
+                    fetchActivities(activity_sequence, type);
+                    fetch_skid();
+                });
+
+            }
+
+
             // document.getElementById('task_' + type + '_' + value).classList.add('task_selected')
 
         }
@@ -924,7 +957,7 @@ include("./includes/auth_session.php");
             if (diffDays > 0) humanDiff += diffDays + " days ";
             if (diffHours > 0) humanDiff += diffHours + " hours ";
             if (diffMinutes > 0) humanDiff += diffMinutes + " minutes ";
-            if (diffSeconds > 0) humanDiff += diffSeconds + " seconds";
+            if (diffSeconds > 0) humanDiff += diffSeconds + " s";
             return humanDiff.trim();
         }
 
@@ -938,7 +971,6 @@ include("./includes/auth_session.php");
                         run_id = 0
                     } else {
                         current_activity.innerHTML = data.activity_name + ': ' + data.description + '';
-                        start_run.classList.add('d-none')
                         buttonActivity.classList.remove('d-none');
                         if (data.activity_sequence == 0) {
                             const allTasks = document.querySelectorAll('.task');
@@ -978,6 +1010,9 @@ include("./includes/auth_session.php");
                 }
             });
         }
+        fetchUserActivity();
+        console.log('Move Type ' + move_type);
+        console.log('Activity Sequence ' + activity_sequence);
 
         function resume_activity() {
             alertShown = false;
@@ -1020,41 +1055,41 @@ include("./includes/auth_session.php");
             });
         }
 
-        document.getElementById("startBtn").addEventListener("click", function() {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Do you want to start the run?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, start it!",
-                cancelButtonText: "No, cancel",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var taskBtns = document.querySelectorAll(".task_btns");
-                    taskBtns.forEach(function(taskBtn) {
-                        taskBtn.classList.remove("d-none");
-                    });
+        // document.getElementById("startBtn").addEventListener("click", function() {
+        //     Swal.fire({
+        //         title: "Are you sure?",
+        //         text: "Do you want to start the run?",
+        //         icon: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonText: "Yes, start it!",
+        //         cancelButtonText: "No, cancel",
+        //         reverseButtons: true
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             var taskBtns = document.querySelectorAll(".task_btns");
+        //             taskBtns.forEach(function(taskBtn) {
+        //                 taskBtn.classList.remove("d-none");
+        //             });
 
 
-                    mount = true;
-                    $.post('php/add_activity.php', {
-                        user: <?php echo $_SESSION['user_id'] ?>,
-                        activity: 1,
-                        activity_sequence: 0,
-                        run_id: 0,
-                        remarks: 'Start',
-                    }).done(function(response) {
-                        console.log(response); // Log the response from the server
+        //             mount = true;
+        //             $.post('php/add_activity.php', {
+        //                 user: <?php echo $_SESSION['user_id'] ?>,
+        //                 activity: 1,
+        //                 activity_sequence: 0,
+        //                 run_id: 0,
+        //                 remarks: 'Start',
+        //             }).done(function(response) {
+        //                 console.log(response); // Log the response from the server
 
-                    }).fail(function(error) {
-                        console.error("Error sending data to the server:", error);
-                    });
-                }
-            });
+        //             }).fail(function(error) {
+        //                 console.error("Error sending data to the server:", error);
+        //             });
+        //         }
+        //     });
 
 
-        });
+        // });
         document.getElementById("pauseBtn").addEventListener("click", function() {
             Swal.fire({
                 title: "Are you sure?",
@@ -1091,6 +1126,7 @@ include("./includes/auth_session.php");
             });
 
         });
+
         document.getElementById("endBtn").addEventListener("click", function() {
             Swal.fire({
                 title: "Are you sure?",
@@ -1123,7 +1159,7 @@ include("./includes/auth_session.php");
                 type: 'GET',
                 dataType: 'json', // Expecting a JSON response
                 success: function(data) {
-                    $('#' + type + '_container').html('');
+                    $('#container_activity').html('');
 
                     if (data.length > 0) {
 
@@ -1136,24 +1172,16 @@ include("./includes/auth_session.php");
                             if (current_sequence == 0) {
                                 if (activity.activity_sequence == 1) {
                                     btns = `<button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Completed')">START</button>
-                                    <button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" class="skip">Skip</button>`;
-                                    }
-                            } else if (activity.activity_sequence == (parseInt(activity_sequence)) && activity.move_type == move_type) {
-                                console.log('Activity Sequence:', activity.activity_sequence);
-                                overlay = `<div class="overlay"></div>`;
-                                btns = `<div class="task-btns d-flex">
-                                    <div class="blur"></div>
-                                    <button class="btn-success task-btn" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Completed')">Complete Task</button>
-                                    <button id="" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Skipped')" class="skip">Skip</button>
-                                </div>`;
-
-                            } else if(move_type == activity.move_type) {
+                                    `;
+                                }
+                            } else if (move_type == activity.move_type) {
                                 playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Skipped')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
                             }
 
                             if (current_sequence == 0) {
                                 show = 'd-none'
                             }
+
                             let activityHtml = `
                                 <div class="task py-3 px-3" id="task_${activity.move_type.toLowerCase()}_${activity.id}">
                                     ${overlay}
@@ -1165,7 +1193,19 @@ include("./includes/auth_session.php");
                                     </div>
                                 </div>
                             `;
-                            $('#' + type + '_container').append(activityHtml); // Append to the container
+                            console.log(activity)
+                            if (activity.activity_sequence != current_sequence && activity.move_type == move_type) {
+                                $('#container_activity').append(activityHtml); // Append to the container
+                            } else {
+                                complete_task.onclick = function() {
+                                    task_selected(
+                                        data[index + 1]['id'],
+                                        data[index + 1]['activity_sequence'],
+                                        activity.move_type.toLowerCase(),
+                                        'Completed'
+                                    );
+                                };
+                            }
                         });
                     } else {
                         console.log('No activities found');
@@ -1179,6 +1219,7 @@ include("./includes/auth_session.php");
 
         // updateTable();
         map.on('locationfound', onLocationFound);
+        let startC = false;
 
         function locate() {
             map.locate({
@@ -1188,22 +1229,83 @@ include("./includes/auth_session.php");
                 enableHighAccuracy: true
             });
         }
-        fetchActivities(0, 'loading');
-        fetchActivities(0, 'unloading');
+        // fetchActivities(0, 'loading');
+        // fetchActivities(0, 'unloading');
 
         setInterval(function() {
-
+            copyHeight();
             fetchUserActivity();
-            // console.log('Run id ' + run_id);
-            // console.log('Move Type ' + move_type);
+            console.log('Run id ' + run_id);
+            console.log('Move Type ' + move_type);
             console.log('Activity Sequence ' + activity_sequence);
-
+            move_type_t.innerHTML = move_type;
+            move_type2.innerHTML = move_type;
             if (!mount && activity_sequence) {
                 console.log('hehe puimas2k')
-                fetchActivities(activity_sequence, 'loading');
-                fetchActivities(activity_sequence, 'unloading');
+                fetchActivities(activity_sequence, move_type);
                 mount = true;
+
             }
+            if (run_id == 0 && !startC) {
+                startC = true;
+                Swal.fire({
+                    title: 'Select Workflow',
+                    input: 'select',
+                    inputOptions: {
+                        loading: 'Loading',
+                        unloading: 'Unloading'
+                    },
+                    inputPlaceholder: 'Choose workflow',
+                    confirmButtonText: 'Start',
+                    allowOutsideClick: false, // Prevents closing when clicking outside
+                    allowEscapeKey: false, // Prevents closing with the Escape key
+                    preConfirm: (value) => {
+                        if (!value) {
+                            Swal.showValidationMessage('Please select an option');
+                        }
+                        return value;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: `You selected: ${result.value}`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, proceed',
+                            cancelButtonText: 'No, cancel',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then((confirmResult) => {
+                            if (confirmResult.isConfirmed) {
+                                Swal.fire('Confirmed!', `Workflow "${result.value}" started.`, 'success');
+                                let activity_se = null;
+                                if (result.value == 'loading') {
+                                    activity_se = 2;
+                                } else {
+                                    activity_se = 7;
+                                }
+                                $.post('php/add_activity.php', {
+                                    user: <?php echo $_SESSION['user_id'] ?>,
+                                    activity: activity_se,
+                                    activity_sequence: 1,
+                                    run_id: 0,
+                                    remarks: 'Start',
+                                }).done(function(response) {
+                                    console.log(response); // Log the response from the server
+
+                                }).fail(function(error) {
+                                    console.error("Error sending data to the server:", error);
+                                });
+                            }
+                        });
+                    }
+                });
+
+
+            }
+
+
         }, 1000);
 
         setInterval(function() {
@@ -1212,7 +1314,7 @@ include("./includes/auth_session.php");
                 timeout: 100,
                 maximumAge: 150
             });
-        }, 100);
+        }, 100000);
 
         function calculateDistance(point1, point2) {
             const earthRadius = 6371; // Earth radius in kilometers

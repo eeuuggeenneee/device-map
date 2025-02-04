@@ -5,7 +5,7 @@ $activity_sequence = $_GET['activity_sequence'] ?? 0;
 $type = $_GET['move_type'] ?? Null;
 $running_sequence = $_GET['running_sequence'] ?? 0;
 if ($type) {
-    $query = "SELECT TOP(3) * 
+    $query = "SELECT * 
               FROM activity 
               WHERE move_type = '$type' 
               ORDER BY 
