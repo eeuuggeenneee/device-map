@@ -3,6 +3,7 @@
 include('../includes/db.php');
 $activity_sequence = $_GET['activity_sequence'] ?? 0;
 $type = $_GET['move_type'] ?? Null;
+$running_sequence = $_GET['running_sequence'] ?? 0;
 if ($type) {
     $query = "SELECT TOP(3) * 
               FROM activity 
@@ -11,6 +12,19 @@ if ($type) {
                   CASE 
                       WHEN activity_sequence = '$activity_sequence' THEN 0
                       WHEN activity_sequence > '$activity_sequence' THEN 1
+                      ELSE 2  
+                  END, 
+                  activity_sequence";
+}
+
+if($activity_sequence == 99){
+    $query = "SELECT * 
+              FROM activity 
+              WHERE move_type = '$type' 
+              ORDER BY 
+                  CASE 
+                      WHEN activity_sequence = '$running_sequence' THEN 0
+                      WHEN activity_sequence > '$running_sequence' THEN 1
                       ELSE 2  
                   END, 
                   activity_sequence";

@@ -472,15 +472,15 @@ include("./includes/auth_session.php");
         }
 
         #loading_container {
-            min-height: 300px;
-            max-height: 300px;
+            min-height: 270px;
+            max-height: 270px;
             overflow-y: auto;
             /* Enables vertical scrolling */
         }
 
         #unloading_container {
-            min-height: 300px;
-            max-height: 300px;
+            min-height: 270px;
+            max-height: 270px;
             overflow-y: auto;
             /* Enables vertical scrolling */
         }
@@ -530,8 +530,8 @@ include("./includes/auth_session.php");
 
                                 </div>
                                 <div class="text-center">
-                                    <a class="load-more">
-                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" onclick="fetchActivities(99,'loading')"></i>Load more
+                                    <a class="load-more" onclick="fetchActivities(99,'loading')">
+                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" ></i>Load more
                                     </a>
                                 </div>
 
@@ -541,8 +541,8 @@ include("./includes/auth_session.php");
 
                                 </div>
                                 <div class="text-center">
-                                    <a class="load-more">
-                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" onclick="fetchActivities(99,'loading')"></i>Load more
+                                    <a class="load-more" onclick="fetchActivities(99,'unloading')">
+                                        <i class="fa-regular fa-circle-info me-2" id="loadmore" ></i>Load more
                                     </a>
                                 </div>
                             </div>
@@ -1132,13 +1132,12 @@ include("./includes/auth_session.php");
                             let overlay = '';
                             let playbtn = '';
                             let show = '';
-                            console.log('pumasok ba??', activity.activity_sequence == (parseInt(current_sequence)) && activity.move_type == move_type);
 
                             if (current_sequence == 0) {
                                 if (activity.activity_sequence == 1) {
                                     btns = `<button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Completed')">START</button>
                                     <button id="btnstart_${activity.move_type.toLowerCase()}_${activity.id}_${activity.activity_sequence}" class="skip">Skip</button>`;
-                                }
+                                    }
                             } else if (activity.activity_sequence == (parseInt(activity_sequence)) && activity.move_type == move_type) {
                                 console.log('Activity Sequence:', activity.activity_sequence);
                                 overlay = `<div class="overlay"></div>`;
@@ -1148,7 +1147,7 @@ include("./includes/auth_session.php");
                                     <button id="" onclick="task_selected(${data[index + 1]['id']}, ${data[index + 1]['activity_sequence']},'${activity.move_type.toLowerCase()}','Skipped')" class="skip">Skip</button>
                                 </div>`;
 
-                            } else {
+                            } else if(move_type == activity.move_type) {
                                 playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Skipped')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
                             }
 
@@ -1177,7 +1176,6 @@ include("./includes/auth_session.php");
                 }
             });
         }
-
 
         // updateTable();
         map.on('locationfound', onLocationFound);
