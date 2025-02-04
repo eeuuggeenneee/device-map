@@ -20,11 +20,30 @@ if ($userId === null) {
 }
 
 // Fetch active user activities for the logged-in user
-$sql = "select d.start_date as run_start_time,a.*,b.name as activity_name ,b.description,b.activity_sequence, c.id as pause_id, b.move_type from user_activity  a
-        left join activity b on a.activity_id = b.id
-        left join pause_history c on a.id = c.activity_id and c.end_time is Null
-        left join fl_runs d on d.id = a.run_id
-        where a.user_id = ? and a.end_time is Null";
+$sql = "SELECT 
+            d.start_date AS run_start_time,
+            a.*,
+            b.name AS activity_name,
+            b.description,
+            b.activity_sequence,
+            c.id AS pause_id, 
+            c.start_time AS pause_start_time, 
+            c.end_time AS pause_end_time,
+            b.move_type,
+
+            -- Total pause duration in seconds for the current run
+            (SELECT SUM(DATEDIFF(SECOND, cc.start_time, cc.end_time)) 
+            FROM pause_history cc
+            WHERE cc.run_id = a.run_id) AS total_pause_seconds_run,
+            -- Total pause duration in seconds for the current activity
+            (SELECT SUM(DATEDIFF(SECOND, ccc.start_time, ccc.end_time)) 
+            FROM pause_history ccc
+            WHERE ccc.activity_id = a.id) AS total_pause_seconds_activity
+        FROM user_activity a
+        LEFT JOIN activity b ON a.activity_id = b.id
+        LEFT JOIN pause_history c ON a.id = c.activity_id AND c.end_time IS NULL
+        LEFT JOIN fl_runs d ON d.id = a.run_id
+        WHERE a.user_id = ? AND a.end_time IS NULL;";
 
 $params = array($userId);
 $query = sqlsrv_query($conn, $sql, $params);
@@ -46,4 +65,3 @@ if ($activity) {
 }
 
 sqlsrv_close($conn);
-?>

@@ -931,7 +931,7 @@ include("./includes/auth_session.php");
         }
         let alertShown = false;
 
-        function getLapseTime(run_start_time) {
+        function getLapseTime(run_start_time, subtractSeconds = 0) {
             // Convert `run_start_time` to a Date object if it's not already
             if (typeof run_start_time === "string") {
                 run_start_time = new Date(run_start_time);
@@ -943,8 +943,8 @@ include("./includes/auth_session.php");
             });
             const newYorkTime = new Date(now); // Convert to Date object
 
-            // Calculate time difference in milliseconds
-            const diffMs = newYorkTime - run_start_time;
+            // Calculate time difference in milliseconds and subtract the given seconds
+            let diffMs = newYorkTime - run_start_time - subtractSeconds * 1000;
 
             // Convert milliseconds to a human-readable format
             const diffSeconds = Math.floor(diffMs / 1000) % 60;
@@ -958,6 +958,7 @@ include("./includes/auth_session.php");
             if (diffHours > 0) humanDiff += diffHours + " hours ";
             if (diffMinutes > 0) humanDiff += diffMinutes + " minutes ";
             if (diffSeconds > 0) humanDiff += diffSeconds + " s";
+
             return humanDiff.trim();
         }
 
@@ -983,8 +984,10 @@ include("./includes/auth_session.php");
                         activity_sequence = data.activity_sequence;
                         activity_id = data.id;
                         run_start_time = data.run_start_time['date'];
-                        time_lapse.innerHTML = getLapseTime(run_start_time);
-                        atime_lapse.innerHTML = getLapseTime(data.start_time['date']);
+                        if (!data.pause_id) {
+                            time_lapse.innerHTML = getLapseTime(run_start_time, data.total_pause_seconds_run);
+                            atime_lapse.innerHTML = getLapseTime(data.start_time['date'], data.total_pause_seconds_activity);
+                        }
 
                         if (data.pause_id && !alertShown) {
                             Swal.fire({
