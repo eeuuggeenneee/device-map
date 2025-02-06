@@ -1013,6 +1013,7 @@ include("./includes/auth_session.php");
                 }
             });
         }
+        
         fetchUserActivity();
         console.log('Move Type ' + move_type);
         console.log('Activity Sequence ' + activity_sequence);

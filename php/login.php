@@ -4,7 +4,7 @@ session_start();
 include("../includes/db.php");
 
 if (isset($_SESSION['user'])) {
-    header('Location: ../index.php');
+    header('Location: ../getting-started.php');
     exit();
 }
 
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $device_id = uniqid('device_', true);
             $_SESSION['dev_id'] = $device_id;
             $cookieParams = session_get_cookie_params();
-            header('Location: ../result.php');
+            header('Location: ../getting-started.php');
             exit();
         } else {
             echo '<p style="color: red;">Invalid credentials</p>';
