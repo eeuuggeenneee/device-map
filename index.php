@@ -1316,61 +1316,6 @@ include("./includes/auth_session.php");
                 //go back to getting started.php
                 location.href = 'getting-started.php';
                 startC = true;
-                Swal.fire({
-                    title: 'Select Workflow',
-                    input: 'select',
-                    inputOptions: {
-                        loading: 'Loading',
-                        unloading: 'Unloading'
-                    },
-                    inputPlaceholder: 'Choose workflow',
-                    confirmButtonText: 'Start',
-                    allowOutsideClick: false, // Prevents closing when clicking outside
-                    allowEscapeKey: false, // Prevents closing with the Escape key
-                    preConfirm: (value) => {
-                        if (!value) {
-                            Swal.showValidationMessage('Please select an option');
-                        }
-                        return value;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            text: `You selected: ${result.value}`,
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes, proceed',
-                            cancelButtonText: 'No, cancel',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false
-                        }).then((confirmResult) => {
-                            if (confirmResult.isConfirmed) {
-                                Swal.fire('Confirmed!', `Workflow "${result.value}" started.`, 'success');
-                                let activity_se = null;
-                                if (result.value == 'loading') {
-                                    activity_se = 2;
-                                } else {
-                                    activity_se = 7;
-                                }
-                                $.post('php/add_activity.php', {
-                                    user: <?php echo $_SESSION['user_id'] ?>,
-                                    activity: activity_se,
-                                    activity_sequence: 1,
-                                    run_id: 0,
-                                    remarks: 'Start',
-                                }).done(function(response) {
-                                    console.log(response); // Log the response from the server
-
-                                }).fail(function(error) {
-                                    console.error("Error sending data to the server:", error);
-                                });
-                            }
-                        });
-                    }
-                });
-
-
             }
 
 
