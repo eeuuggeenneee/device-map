@@ -74,7 +74,7 @@ $sql = "SELECT
 FROM user_activity a
 LEFT JOIN activity b ON a.activity_id = b.id
 LEFT JOIN user_tbl c ON c.id = a.user_id
-WHERE a.activity_id <> 1
+WHERE a.activity_id <> 1 and a.start_time is not null and a.end_time is not null
 GROUP BY 
     a.id, 
     a.user_id,

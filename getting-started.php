@@ -359,7 +359,7 @@ include("./includes/auth_session.php");
                             }
                         }]
                     });
-             
+
                     $('#download-button').on('click', function() {
                         var startDate = $('#filter-start-date').val();
                         var endDate = $('#filter-end-date').val();
@@ -412,23 +412,28 @@ include("./includes/auth_session.php");
         }
 
         function formatDateTime(dateString) {
-            if (!dateString) return "N/A"; // Handle null values
+            try {
+                if (!dateString) return "N/A"; // Handle null values
 
-            // Convert to Date object
-            let date = new Date(dateString);
+                // Convert to Date object
+                let date = new Date(dateString);
 
-            // Define options for formatting
-            let options = {
-                year: 'numeric',
-                month: 'short', // Abbreviated month (e.g., "Jan")
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true // Use 12-hour format with AM/PM
-            };
+                // Define options for formatting
+                let options = {
+                    year: 'numeric',
+                    month: 'short', // Abbreviated month (e.g., "Jan")
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true // Use 12-hour format with AM/PM
+                };
 
-            // Format the date and return it
-            return date.toLocaleString('en-US', options).replace(',', '');
+                // Format the date and return it
+                return date.toLocaleString('en-US', options).replace(',', '');
+            } catch {
+                return "N/A";
+            }
+
         }
 
         updateTable();

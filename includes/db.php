@@ -1,6 +1,6 @@
 <?php
 
-$serverName = "DESKTOP-K8LRD2C"; // Replace with your SQL Server instance name or IP address
+$serverName = "PBI11411\MSSQLSERVER01"; // Replace with your SQL Server instance name or IP address
 $connectionOptions = array(
     "Database" => "pbi_fltracker", // Replace with your database name
     "Uid" => "", // Leave empty for Windows authentication

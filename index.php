@@ -1251,6 +1251,7 @@ include("./includes/auth_session.php");
 
             }
             if (run_id == 0 && !startC) {
+                location.href('getting_started.php');
                 startC = true;
                 Swal.fire({
                     title: 'Select Workflow',
