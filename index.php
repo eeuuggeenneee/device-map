@@ -697,6 +697,7 @@ include("./includes/auth_session.php");
         var activity_id = null;
         var run_start_time = null;
         var mount = false;
+        var activity_endtime = null;
         $(document).ready(function() {
             $('#completedActivityTable').DataTable({
                 paging: true,
@@ -830,7 +831,7 @@ include("./includes/auth_session.php");
                         });
                         Swal.fire({
                             title: 'Success!',
-                            text: 'Moving to the next step...',
+                            text: 'Task Completed',
                             icon: 'success',
                             showConfirmButton: false, // No need for a confirm button
                             timer: 1500 // 1.5 seconds
@@ -877,10 +878,46 @@ include("./includes/auth_session.php");
                     showConfirmButton: false, // No need for a confirm button
                     timer: 1500 // 1.5 seconds
                 }).then(() => {
-                    fetchActivities(activity_sequence, type);
+                    // fetchActivities(activity_sequence, type);
                     fetch_skid();
                 });
 
+            } else {
+                $.post('php/add_activity.php', {
+                    user: <?php echo $_SESSION['user_id'] ?>,
+                    activity: value,
+                    activity_sequence: activity_sequence,
+                    run_id: run_id ?? '0',
+                    remarks: btn_click,
+                }).done(function(response) {
+                    console.log(response);
+                }).fail(function(error) {
+                    console.error("Error sending data to the server:", error);
+                });
+                setTimeout(() => {
+                    if (type == 'loading') {
+                        progress_bar.style.width = (activity_sequence / 5) * 100 + '%';
+                    } else {
+                        progress_bar.style.width = (activity_sequence / 9) * 100 + '%';
+                    }
+                }, 1000);
+
+                selectedValue = value;
+                console.log('Selected Value is ' + value);
+                const allTasks = document.querySelectorAll('.task');
+                allTasks.forEach(task => {
+                    task.classList.remove('task_selected');
+                });
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Moving to the next step...',
+                    icon: 'success',
+                    showConfirmButton: false, // No need for a confirm button
+                    timer: 1500 // 1.5 seconds
+                }).then(() => {
+                    fetchActivities(activity_sequence, type);
+                    fetch_skid();
+                });
             }
 
 
@@ -971,7 +1008,7 @@ include("./includes/auth_session.php");
                     if (data.error) {
                         run_id = 0
                     } else {
-                        current_activity.innerHTML = data.activity_name + ': ' + data.description + '';
+
                         buttonActivity.classList.remove('d-none');
                         if (data.activity_sequence == 0) {
                             const allTasks = document.querySelectorAll('.task');
@@ -984,9 +1021,27 @@ include("./includes/auth_session.php");
                         activity_sequence = data.activity_sequence;
                         activity_id = data.id;
                         run_start_time = data.run_start_time['date'];
-                        if (!data.pause_id) {
+                        activity_endtime = data.end_time && data.end_time.date ? data.end_time.date : null;
+
+
+                        if (activity_endtime == null) {
+                            complete_task.textContent = 'Complete Task';
+                            complete_task.classList.remove('btn-warning');
+                            complete_task.classList.add('btn-success');
+                            complete_task.disabled = false;
+                            current_activity.innerHTML = data.activity_name + ': ' + data.description + '';
+                            if (!data.pause_id) {
+                                time_lapse.innerHTML = getLapseTime(run_start_time, data.total_pause_seconds_run);
+                                atime_lapse.innerHTML = getLapseTime(data.start_time['date'], data.total_pause_seconds_activity);
+                            }
+                        } else {
+                            complete_task.textContent = 'No Task Selected';
+                            complete_task.classList.add('btn-warning');
+                            complete_task.classList.remove('btn-success');
+                            complete_task.disabled = true;
+                            current_activity.textContent = 'No activity selected';
                             time_lapse.innerHTML = getLapseTime(run_start_time, data.total_pause_seconds_run);
-                            atime_lapse.innerHTML = getLapseTime(data.start_time['date'], data.total_pause_seconds_activity);
+                            atime_lapse.innerHTML = 'N/A';
                         }
 
                         if (data.pause_id && !alertShown) {
@@ -1013,7 +1068,7 @@ include("./includes/auth_session.php");
                 }
             });
         }
-        
+
         fetchUserActivity();
         console.log('Move Type ' + move_type);
         console.log('Activity Sequence ' + activity_sequence);
@@ -1179,7 +1234,7 @@ include("./includes/auth_session.php");
                                     `;
                                 }
                             } else if (move_type == activity.move_type) {
-                                playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Skipped')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
+                                playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Play')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
                             }
 
                             if (current_sequence == 0) {
@@ -1201,14 +1256,21 @@ include("./includes/auth_session.php");
                             if (activity.activity_sequence != current_sequence && activity.move_type == move_type) {
                                 $('#container_activity').append(activityHtml); // Append to the container
                             } else {
-                                complete_task.onclick = function() {
-                                    task_selected(
-                                        data[index + 1]['id'],
-                                        data[index + 1]['activity_sequence'],
-                                        activity.move_type.toLowerCase(),
-                                        'Completed'
-                                    );
-                                };
+                                console.log(activity)
+
+                                if (activity_endtime != null) {
+
+                                } {
+
+                                    complete_task.onclick = function() {
+                                        task_selected(
+                                            data[index + 1]['id'],
+                                            data[index + 1]['activity_sequence'],
+                                            activity.move_type.toLowerCase(),
+                                            'Completed'
+                                        );
+                                    };
+                                }
                             }
                         });
                     } else {
@@ -1245,13 +1307,14 @@ include("./includes/auth_session.php");
             move_type_t.innerHTML = move_type;
             move_type2.innerHTML = move_type;
             if (!mount && activity_sequence) {
-                console.log('hehe puimas2k')
                 fetchActivities(activity_sequence, move_type);
                 mount = true;
 
             }
             if (run_id == 0 && !startC) {
-                location.href('getting_started.php');
+                // location.href('getting_started.php');
+                //go back to getting started.php
+                location.href = 'getting-started.php';
                 startC = true;
                 Swal.fire({
                     title: 'Select Workflow',

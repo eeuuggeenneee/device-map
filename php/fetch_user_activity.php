@@ -20,7 +20,7 @@ if ($userId === null) {
 }
 
 // Fetch active user activities for the logged-in user
-$sql = "SELECT 
+$sql = "SELECT top 1
             d.start_date AS run_start_time,
             a.*,
             b.name AS activity_name,
@@ -30,7 +30,6 @@ $sql = "SELECT
             c.start_time AS pause_start_time, 
             c.end_time AS pause_end_time,
             b.move_type,
-
             -- Total pause duration in seconds for the current run
             (SELECT SUM(DATEDIFF(SECOND, cc.start_time, cc.end_time)) 
             FROM pause_history cc
@@ -43,7 +42,8 @@ $sql = "SELECT
         LEFT JOIN activity b ON a.activity_id = b.id
         LEFT JOIN pause_history c ON a.id = c.activity_id AND c.end_time IS NULL
         LEFT JOIN fl_runs d ON d.id = a.run_id
-        WHERE a.user_id = ? AND a.end_time IS NULL;";
+        WHERE a.user_id = ?
+		and d.end_date is null order by id desc;";
 
 $params = array($userId);
 $query = sqlsrv_query($conn, $sql, $params);

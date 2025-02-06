@@ -11,7 +11,7 @@ if ($conn) {
 
     if ($run_id == 0) {
         $insert = 'INSERT INTO fl_runs (start_date,user_id,status) OUTPUT INSERTED.id VALUES (?,?,?)';
-        $params2 = array($now->format("Y-m-d H:i:s"), $user,'1');
+        $params2 = array($now->format("Y-m-d H:i:s"), $user, '1');
         $query = sqlsrv_query($conn, $insert, $params2);
         if ($query) {
             $row = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC);
@@ -19,16 +19,17 @@ if ($conn) {
                 $run_id = $row['id'];
             }
         }
-
     } else if ($run_id != 0) {
         $tsql = "UPDATE user_activity SET end_time = ?, remarks = ?  WHERE end_time IS NULL AND user_id = ?";
-        $params = array($now->format("Y-m-d H:i:s"),$remarks, $user);
+        $params = array($now->format("Y-m-d H:i:s"), $remarks, $user);
+        $stmt = sqlsrv_query($conn, $tsql, $params);
+    }
+    if ($remarks == 'Play') {
+        $tsql = "INSERT INTO user_activity (user_id, activity_id, start_time,run_id) VALUES (?, ?, ?,?)";
+        $params = array($user, $activity, $now->format("Y-m-d H:i:s"), $run_id);
         $stmt = sqlsrv_query($conn, $tsql, $params);
     }
 
-    $tsql = "INSERT INTO user_activity (user_id, activity_id, start_time,run_id) VALUES (?, ?, ?,?)";
-    $params = array($user, $activity, $now->format("Y-m-d H:i:s"), $run_id);
-    $stmt = sqlsrv_query($conn, $tsql, $params);
 
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
