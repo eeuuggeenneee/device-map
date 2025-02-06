@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $device_id = uniqid('device_', true);
             $_SESSION['dev_id'] = $device_id;
             $cookieParams = session_get_cookie_params();
-            header('Location: ../index.php');
+            header('Location: ../result.php');
             exit();
         } else {
             echo '<p style="color: red;">Invalid credentials</p>';
