@@ -509,7 +509,7 @@ include("./includes/auth_session.php");
                             <h2 class="fw-semibold"><span id="move_type_t"></span></h2>
                             <div class="d-flex d-none ms-auto gap-2" id="buttonActivity">
                                 <button class="btn btn-info text-white" id="pauseBtn">Pause Task</button>
-                                <button class="btn btn-danger" id="endBtn">End Task</button>
+                                <button class="btn btn-danger" id="endBtn">End Workflow</button>
                             </div>
                         </div>
 
@@ -529,136 +529,9 @@ include("./includes/auth_session.php");
                     </div>
                     <div class="card-body">
                         <div id="container_activity" style="overflow-y: auto; height: 300px;">
-                            <!-- Content goes here -->
                         </div>
-
                     </div>
-                    <!-- <div class="row" id="start_run">
-                        <div class="col-12">
-                            <button class="btn btn-success col-12 btn-block text-white" id="startBtn">Start Run</button>
-                        </div>
-                    </div> -->
                 </div>
-                <!-- <table class="table table-striped table-bordered mt-2">
-                    <thead>
-                        <tr>
-                            <th scope="col">Duration</th>
-                            <th scope="col">Timeline</th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="align-middle text-middle ">
-                        <tr class="align-middle">
-                            <th scope="row" class="align-middle">30 Mins</th>
-                            <td>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2003</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2004">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2004</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2005">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2004</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2010">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2010</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step mb-0">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2020">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2020</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="align-middle">
-                            <th scope="row" class="align-middle">30 Mins</th>
-                            <td>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2003</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2004">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2004</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2005">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2004</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2010">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2010</p>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-step mb-0">
-                                                <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2020">
-                                                    <div class="inner-circle"></div>
-                                                    <p class="h6 mt-3 mb-1">2020</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
-                <!-- <div class="progress-section mt-2">
-                    <h4>Timeline</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Run type</th>
-                                <th scope="col">Run start</th>
-                                <th scope="col">Run end</th>
-                                <th scope="col">Duration</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">Loading</th>
-                                <td>2025-01-30 00:04:00</td>
-                                <td>2025-01-30 01:04:00 </td>
-                                <td>1 Hour</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Loading</th>
-                                <td>2025-01-30 00:04:00</td>
-                                <td>2025-01-30 01:04:00 </td>
-                                <td>1 Hour</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> -->
             </div>
         </div>
     </div>
@@ -873,7 +746,7 @@ include("./includes/auth_session.php");
                 });
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Moving to the next step...',
+                    text: 'Task Completed',
                     icon: 'success',
                     showConfirmButton: false, // No need for a confirm button
                     timer: 1500 // 1.5 seconds
@@ -910,7 +783,7 @@ include("./includes/auth_session.php");
                 });
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Moving to the next step...',
+                    text: 'Task Started',
                     icon: 'success',
                     showConfirmButton: false, // No need for a confirm button
                     timer: 1500 // 1.5 seconds
@@ -1039,9 +912,10 @@ include("./includes/auth_session.php");
                             complete_task.classList.add('btn-warning');
                             complete_task.classList.remove('btn-success');
                             complete_task.disabled = true;
-                            current_activity.textContent = 'No activity selected';
+                            current_activity.textContent = 'Please select a task';
                             time_lapse.innerHTML = getLapseTime(run_start_time, data.total_pause_seconds_run);
                             atime_lapse.innerHTML = 'N/A';
+                            document.querySelectorAll('.play_task').forEach(el => el.classList.remove('d-none'));
                         }
 
                         if (data.pause_id && !alertShown) {
@@ -1200,9 +1074,7 @@ include("./includes/auth_session.php");
                     $.post('php/update_activity.php', {
                         user: <?php echo $_SESSION['user_id'] ?>,
                     }).done(function(response) {
-                        document.querySelectorAll('.card').forEach(function(cardSelect) {
-                            cardSelect.classList.remove('disabled');
-                        });
+                        document.querySelectorAll('.card').forEach(function(cardSelect) {});
                         location.reload();
                     }).fail(function(error) {
                         console.error("Error:", error);
@@ -1234,7 +1106,7 @@ include("./includes/auth_session.php");
                                     `;
                                 }
                             } else if (move_type == activity.move_type) {
-                                playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Play')" class="play_task me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
+                                playbtn = `<button onclick="task_selected(${activity.id}, ${activity.activity_sequence}, '${activity.move_type.toLowerCase()}','Play')" class="play_task d-none me-2 position-relative ${show}"><i class="fa-duotone fa-regular fa-play fa-xl"></i></button>`;
                             }
 
                             if (current_sequence == 0) {

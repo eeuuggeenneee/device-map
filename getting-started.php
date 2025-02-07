@@ -157,10 +157,14 @@ include("./includes/auth_session.php");
                                 <div class="d-flex">
                                     <input type="date" class="form-control me-3" name="inputDate" id="filter-start-date">
                                     <input type="date" class="form-control me-3" name="inputDate" id="filter-end-date">
-                                    <button type="button" class="btn btn-secondary" id="download-button">
-                                        <i class="fa-solid fa-download"></i>
+                                    <button type="button" class="btn btn-danger me-2 " id="download-button">
+                                        <i class="fa-sharp-duotone fa-thin fa-filter-circle-xmark"></i>
                                     </button>
                                 </div>
+
+                                <button type="button" class="btn btn-secondary ms-auto" id="download-button">
+                                    <i class="fa-solid fa-download"></i> Export
+                                </button>
                             </div>
 
                             <div id="DataTables_Table_0_wrapper" class="" style="overflow-y: auto">
@@ -366,39 +370,31 @@ include("./includes/auth_session.php");
                         var url = 'php/fetch_excel.php?start_date=' + startDate + '&end_date=' + endDate;
                         window.location.href = url;
                     });
-                    $('#filter-start-date, #filter-end-date').on('change', function() {
+                    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                         var startDate = $('#filter-start-date').val();
                         var endDate = $('#filter-end-date').val();
 
-                        // Check if both start and end date are set
-                        if (startDate && endDate) {
-                            // Convert the dates to Date objects and set time to midnight (00:00:00)
-                            var startDateObj = new Date(startDate);
-                            startDateObj.setHours(0, 0, 0, 0); // Normalize to midnight
-
-                            var endDateObj = new Date(endDate);
-                            endDateObj.setHours(23, 59, 59, 999); // Normalize to end of the day
-
-                            // Apply the date range filter to the Start Time column
-                            table.rows().every(function() {
-                                var rowData = this.data();
-                                var rowStartDate = new Date(rowData[2]); // Assuming the Start Time is in the 3rd column (index 2)
-                                rowStartDate.setHours(0, 0, 0, 0); // Normalize the row's date to midnight
-
-                                // Check if the row's Start Time is within the range
-                                if (rowStartDate >= startDateObj && rowStartDate <= endDateObj) {
-                                    this.nodes().to$().show(); // Show the row if it matches the date range
-                                } else {
-                                    this.nodes().to$().hide(); // Hide the row if it doesn't match
-                                }
-                            });
-                        } else {
-                            // If no date range is selected, show all rows
-                            table.rows().every(function() {
-                                this.nodes().to$().show();
-                            });
+                        if (!startDate || !endDate) {
+                            return true; // Show all rows if no date filter is applied
                         }
+
+                        var startDateObj = new Date(startDate);
+                        startDateObj.setHours(0, 0, 0, 0); // Normalize to start of the day
+
+                        var endDateObj = new Date(endDate);
+                        endDateObj.setHours(23, 59, 59, 999); // Normalize to end of the day
+
+                        var rowDate = new Date(data[2]); // Assuming the date column is at index 2
+                        rowDate.setHours(0, 0, 0, 0); // Normalize row date
+
+                        return rowDate >= startDateObj && rowDate <= endDateObj;
                     });
+
+                    // Trigger filter on date change
+                    $('#filter-start-date, #filter-end-date').on('change', function() {
+                        table.draw(); // Redraw DataTable with the applied filter
+                    });
+
 
 
                     // $('#DataTables_Table_0').DataTable({

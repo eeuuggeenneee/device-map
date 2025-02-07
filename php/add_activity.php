@@ -24,7 +24,7 @@ if ($conn) {
         $params = array($now->format("Y-m-d H:i:s"), $remarks, $user);
         $stmt = sqlsrv_query($conn, $tsql, $params);
     }
-    if ($remarks == 'Play') {
+    if ($remarks == 'Play' || $remarks == 'Start') {
         $tsql = "INSERT INTO user_activity (user_id, activity_id, start_time,run_id) VALUES (?, ?, ?,?)";
         $params = array($user, $activity, $now->format("Y-m-d H:i:s"), $run_id);
         $stmt = sqlsrv_query($conn, $tsql, $params);
