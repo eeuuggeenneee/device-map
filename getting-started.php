@@ -157,11 +157,10 @@ include("./includes/auth_session.php");
                                 <div class="d-flex">
                                     <input type="date" class="form-control me-3" name="inputDate" id="filter-start-date">
                                     <input type="date" class="form-control me-3" name="inputDate" id="filter-end-date">
-                                    <button type="button" class="btn btn-danger me-2 " id="download-button">
+                                    <button type="button" class="btn btn-danger me-2 " id="clear-button">
                                         <i class="fa-sharp-duotone fa-thin fa-filter-circle-xmark"></i>
                                     </button>
                                 </div>
-
                                 <button type="button" class="btn btn-secondary ms-auto" id="download-button">
                                     <i class="fa-solid fa-download"></i> Export
                                 </button>
@@ -328,6 +327,8 @@ include("./includes/auth_session.php");
                         tr.append($('<td>').text(row.name));
                         tr.append($('<td>').text(row.move_type));
                         tr.append($('<td>').text(formatDateTime(row.start_time['date'])));
+                        console.log("Raw start_time:", row.start_time['date']);
+
                         tr.append($('<td>').text(formatDateTime(row.end_time['date'])));
                         tr.append($('<td>').text(row.total_duration_human_readable));
                         tr.append($('<td>').text(row.total_pause_human_readable ?? 'N/A'));
@@ -343,6 +344,9 @@ include("./includes/auth_session.php");
                         ],
                         "pageLength": 10,
                         "lengthChange": true,
+                        "order": [
+                            [3, "asc"]
+                        ], // Order by column index 4 (zero-based, so use 3)
                         dom: 'Bfrtip',
                         buttons: [
                             'csv', 'excel' // Enable CSV and Excel export buttons
@@ -355,7 +359,11 @@ include("./includes/auth_session.php");
                                     var options = {
                                         year: 'numeric',
                                         month: 'short',
-                                        day: 'numeric'
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit', // Include seconds
+                                        hour12: true // Use 12-hour format with AM/PM
                                     };
                                     return date.toLocaleDateString('en-US', options); // Format as "Jan 30 2025"
                                 }
@@ -364,12 +372,14 @@ include("./includes/auth_session.php");
                         }]
                     });
 
+
                     $('#download-button').on('click', function() {
                         var startDate = $('#filter-start-date').val();
                         var endDate = $('#filter-end-date').val();
                         var url = 'php/fetch_excel.php?start_date=' + startDate + '&end_date=' + endDate;
                         window.location.href = url;
                     });
+
                     $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
                         var startDate = $('#filter-start-date').val();
                         var endDate = $('#filter-end-date').val();
@@ -394,7 +404,11 @@ include("./includes/auth_session.php");
                     $('#filter-start-date, #filter-end-date').on('change', function() {
                         table.draw(); // Redraw DataTable with the applied filter
                     });
-
+                    $('#clear-button').on('click', function() {
+                        $('#filter-start-date').val('');
+                        $('#filter-end-date').val('');
+                        table.search('').columns().search('').draw(); // Clear filters & redraw table
+                    });
 
 
                     // $('#DataTables_Table_0').DataTable({
@@ -411,6 +425,9 @@ include("./includes/auth_session.php");
             try {
                 if (!dateString) return "N/A"; // Handle null values
 
+                // Remove microseconds if present
+                dateString = dateString.split('.')[0]; // Keeps only "YYYY-MM-DD HH:MM:SS"
+
                 // Convert to Date object
                 let date = new Date(dateString);
 
@@ -421,16 +438,18 @@ include("./includes/auth_session.php");
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit',
+                    second: '2-digit', // Include seconds
                     hour12: true // Use 12-hour format with AM/PM
                 };
 
                 // Format the date and return it
                 return date.toLocaleString('en-US', options).replace(',', '');
-            } catch {
+            } catch (error) {
+                console.error("Date formatting error:", error);
                 return "N/A";
             }
-
         }
+
 
         updateTable();
     </script>
