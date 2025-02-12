@@ -208,45 +208,57 @@ include("./includes/auth_session.php");
             let selectedValue = this.value;
             move_type = selectedValue;
             fetchActivities(0, selectedValue);
+            document.getElementById('ins_flow').classList.remove('d-none');
+
         });
 
         function startActivity() {
             console.log('selecte id ', current_id)
             console.log('seqceqeq  ', selected_sequence)
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Do you want to start to this step?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#198754",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, start!",
-            }).then((result) => {
+            if (current_id) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you want to start to this step?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#198754",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, start!",
+                }).then((result) => {
 
-                if (result.isConfirmed) {
-                    $.post('php/add_activity.php', {
-                        user: <?php echo $_SESSION['user_id'] ?>,
-                        activity: current_id,
-                        activity_sequence: selected_sequence,
-                        run_id: 0,
-                        remarks: 'Start',
-                    }).done(function(response) {
-                        console.log(response);
-                    }).fail(function(error) {
-                        console.error("Error sending data to the server:", error);
-                    });
+                    if (result.isConfirmed) {
+                        $.post('php/add_activity.php', {
+                            user: <?php echo $_SESSION['user_id'] ?>,
+                            activity: current_id,
+                            activity_sequence: selected_sequence,
+                            run_id: 0,
+                            remarks: 'Start',
+                        }).done(function(response) {
+                            console.log(response);
+                        }).fail(function(error) {
+                            console.error("Error sending data to the server:", error);
+                        });
 
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Moving to the main page',
-                        icon: 'success',
-                        showConfirmButton: false, // No need for a confirm button
-                        timer: 1500 // 1.5 seconds
-                    }).then(() => {
-                        window.location.href = "index.php";
-                    });
-                }
-            });
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Moving to the main page',
+                            icon: 'success',
+                            showConfirmButton: false, // No need for a confirm button
+                            timer: 1500 // 1.5 seconds
+                        }).then(() => {
+                            window.location.href = "index.php";
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Starting Activity',
+                    text: 'Please ensure an activity is selected before proceeding.',
+                    confirmButtonText: 'OK'
+                });
+            }
+
         }
 
 
@@ -307,7 +319,6 @@ include("./includes/auth_session.php");
         function task_selected_id(id, selected_id, current_sequence) {
             selected_sequence = current_sequence;
             current_id = selected_id;
-            document.getElementById('ins_flow').classList.remove('d-none');
             document.querySelectorAll('.task_selected').forEach(el => {
                 el.classList.remove('task_selected');
             });
